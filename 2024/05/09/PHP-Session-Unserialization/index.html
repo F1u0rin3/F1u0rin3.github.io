@@ -198,7 +198,7 @@
             
             <span class="tag">
                 
-                <a href="/tags/CTF-Web-Session/" style="color: #ff7d73">
+                <a href="/tags/CTF-Web-Session/" style="color: #00bcd4">
                     CTF-Web Session
                 </a>
             </span>
@@ -246,7 +246,7 @@ if (!isset($_SESSION[&#39;username&#39;])) &#123;
 <br>
 
 <p>整个流程大概如上所述，也可参考下述流程图：</p>
-<img src="Software\Myblog\source\images\20191026142328-1fba974c-f7b9-1.png" style="zoom:50%;">
+<img src="Software\Myblog\public\images\20191026142328-1fba974c-f7b9-1.png" style="zoom:50%;">
 
 <br>
 <br>
@@ -259,10 +259,10 @@ if (!isset($_SESSION[&#39;username&#39;])) &#123;
 
 
 <h2 id="0x04-PHP-Session的存储机制"><a href="#0x04-PHP-Session的存储机制" class="headerlink" title="0x04 PHP Session的存储机制"></a>0x04 PHP Session的存储机制</h2><p>上文中提到了 <code>PHP session</code>的存储机制是由<code>session.serialize_handler</code>来定义引擎的，默认是以文件的方式存储，且存储的文件是由<code>sess_sessionid</code>来决定文件名的，当然这个文件名也不是不变的，如<code>Codeigniter</code>框架的 <code>session</code>存储的文件名为<code>ci_sessionSESSIONID</code>，如下图所示</p>
-<img src="Software\Myblog\source\images\20191026142528-67263294-f7b9-1.png" style="zoom:75%;">
+<img src="Software\Myblog\public\images\20191026142528-67263294-f7b9-1.png" style="zoom:67%;">
 
 <p>当然，文件的内容始终是session值的序列化之后的内容：</p>
-<img src="Software\Myblog\source\images\wc.png" style="zoom:50%;">
+<img src="Software\Myblog\public\images\wc.png" style="zoom:50%;">
 
 <br>
 
