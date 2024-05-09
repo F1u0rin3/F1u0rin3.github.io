@@ -17,7 +17,7 @@
 
 
     <meta charset="utf-8" />
-    <title>Flu0r1n3の妙妙屋</title>
+    <title>PHP-Session-Unserialization | Flu0r1n3の妙妙屋</title>
     <meta name="author" content="Flu0r1n3" />
     <meta name="description" content="" />
     <meta name="keywords" content="" />
@@ -56,7 +56,9 @@
 
 
 
-<script src="/js/lib/home.js"></script>
+
+
+
 
 <link rel="stylesheet" href="/css/main.css" />
 
@@ -166,39 +168,17 @@
 </transition>
 
         <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
-            <div id="home-head">
-    <div
-        id="home-background"
-        ref="homeBackground"
-        data-images="/images/tlxy.jpg"
-    ></div>
-    <div id="home-info" @click="homeClick">
-        <span class="loop"></span>
-        <span class="loop"></span>
-        <span class="loop"></span>
-        <span class="loop"></span>
-        <span class="info">
-            <div class="wrap">
-                <h1>Flu0r1n3の妙妙屋</h1>
-                <h3>Flu0r1n3的博客</h3>
-                <h5></h5>
-            </div>
-        </span>
+            <div class="article">
+    <div>
+        <h1>PHP-Session-Unserialization</h1>
     </div>
-</div>
-<div
-    id="home-posts-wrap"
-    ref="homePostsWrap"
-    true
->
-    <div id="home-posts">
-        
-
-<div class="post">
-    <a href="/2024/05/09/PHP-Session-Unserialization/">
-        <h2 class="post-title">PHP-Session-Unserialization</h2>
-    </a>
-    <div class="category-and-date">
+    <div class="info">
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2024/5/9
+        </span>
         
         <span class="category">
             <a href="/categories/Web/">
@@ -209,19 +189,26 @@
             </a>
         </span>
         
-        <span class="date">
+        
+        <span class="tags">
             <span class="icon">
-                <i class="fa-solid fa-calendar fa-fw"></i>
+                <i class="fa-solid fa-tags fa-fw"></i>
             </span>
-            2024/5/9
+            
+            
+            <span class="tag">
+                
+                <a href="/tags/CTF-Web-Session/" style="color: #00bcd4">
+                    -CTF-Web -Session
+                </a>
+            </span>
+            
         </span>
         
-        
     </div>
-    <div class="description">
-        <div class="content" v-pre>
-            
-            <p>要了解Session反序列化，当然先要了解什么是session，或者说，把和session相关的几个机制都一起了解一下。</p>
+    
+    <div class="content" v-pre>
+        <p>要了解Session反序列化，当然先要了解什么是session，或者说，把和session相关的几个机制都一起了解一下。</p>
 <h2 id="0x01-Cookie-Session"><a href="#0x01-Cookie-Session" class="headerlink" title="0x01 Cookie,Session"></a>0x01 Cookie,Session</h2><p>1.Cookie：当客户端对服务器发起HTTP请求时，服务器会对客户端进行一个Set-Cookie操作，并将其中的Name(名)和Value(值)填充</p>
 <pre><code class="html">Name:lwt
 Value:sb
@@ -542,107 +529,13 @@ echo urlencode(serialize($a));
 </li>
 </ul>
 
-            
-        </div>
     </div>
-    <div class="post-tags">
-        
-        <span class="icon">
-            <i class="fa-solid fa-tags fa-fw"></i>
-        </span>
-        
-        
-        
-        <span class="tag">
-            
-            <a href="/tags/CTF-Web-Session/" style="color: #ffa2c4">-CTF-Web -Session</a>
-        </span>
-        
-    </div>
-    <a href="/2024/05/09/PHP-Session-Unserialization/" class="go-post">阅读全文</a>
-</div>
-
-<div class="post">
-    <a href="/2024/05/06/Myfirstblog/">
-        <h2 class="post-title">My First Blog</h2>
-    </a>
-    <div class="category-and-date">
-        
-        <span class="category">
-            <a href="/categories/%E4%B8%80%E4%BA%9B%E9%A3%8E%E8%A8%80%E9%A3%8E%E8%AF%AD/">
-                <span class="icon">
-                    <i class="fa-solid fa-bookmark fa-fw"></i>
-                </span>
-                一些风言风语
-            </a>
-        </span>
-        
-        <span class="date">
-            <span class="icon">
-                <i class="fa-solid fa-calendar fa-fw"></i>
-            </span>
-            2024/5/6
-        </span>
-        
-        
-    </div>
-    <div class="description">
-        <div class="content" v-pre>
-            
-            <h2 id="0x01-搭这个blog的心酸历程"><a href="#0x01-搭这个blog的心酸历程" class="headerlink" title="0x01 搭这个blog的心酸历程"></a>0x01 搭这个blog的心酸历程</h2><p>之前帆神发过一个Gitee+Hexo+Fluid主题的blog搭建教程，按着教程来到最后的个性化和hexo d操作时卡住了，<br>加上gitee的申请审核给当时的我有点劝退了( 后来决定就用GitHub搭的可能更快一些，所以也按照教程来，发现当时的问题就在于没有安装<code>&lt;hexo-deployer-git模块&gt;</code></p>
-<pre><code class="bash">$ npm install hexo-deployer-git --save
-</code></pre>
-<p>结果卡了差不多一个月的进度在一个晚上就推完了(你在干什么)</p>
-<h2 id="0x02-写blog的初心"><a href="#0x02-写blog的初心" class="headerlink" title="0x02 写blog的初心"></a>0x02 写blog的初心</h2><p>希望自己不会忘记吧，文章的每一步操作可能会细致到键盘按键(),像我这种电脑小白总是在看文章的时候总是上一步还看得懂下一步就看不懂了，所以可能会有点啰嗦，我本身也不是什么大牛，没有什么水平，如果不嫌弃的话也来看看吧QwQ</p>
-
-            
-        </div>
-    </div>
-    <div class="post-tags">
-        
-        
-        
-    </div>
-    <a href="/2024/05/06/Myfirstblog/" class="go-post">阅读全文</a>
-</div>
-
-
-        <div class="page-current">
     
-    <span class="current">1</span>
     
     
     
     
-</div>
-
-    </div>
     
-    <div id="home-card">
-        <div id="card-style">
-    <div id="card-div">
-        <div class="avatar">
-            <img src="/images/amiya.jpg" alt="avatar" />
-        </div>
-        <div class="name">Flu0r1n3</div>
-        <div class="description">
-            <p>人亦如星，或居高而渺然，或为彗而明夜。</p>
-
-        </div>
-        
-        
-        <div class="friend-links">
-            
-            <div class="friend-link">
-                <a target="_blank" rel="noopener" href="https://wwwmarin.xyz">Marin</a>
-            </div>
-            
-        </div>
-        
-    </div>
-</div>
-
-    </div>
     
 </div>
 
@@ -674,6 +567,12 @@ echo urlencode(serialize($a));
         
     </div>
     <script src="/js/main.js"></script>
+    
+    
+
+
+
+
     
 <script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
 </html>
