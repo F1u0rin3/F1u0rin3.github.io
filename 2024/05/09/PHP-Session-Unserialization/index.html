@@ -198,7 +198,7 @@
             
             <span class="tag">
                 
-                <a href="/tags/CTF-Web-Session/" style="color: #00a596">
+                <a href="/tags/CTF-Web-Session/" style="color: #00bcd4">
                     CTF-Web Session
                 </a>
             </span>
@@ -246,7 +246,7 @@ if (!isset($_SESSION[&#39;username&#39;])) &#123;
 <br>
 
 <p>整个流程大概如上所述，也可参考下述流程图：</p>
-<p><img src="05/09/PHP-Session-Unserialization/lct.png"></p>
+<p><img src="https://www.notion.so/WEB-Session-Unserialization-d0e52793e1dd44889be42b904c628602?pvs=4#91091b750e854dbe8d5e235a495e33e3"></p>
 <br>
 <br>
 
@@ -258,9 +258,9 @@ if (!isset($_SESSION[&#39;username&#39;])) &#123;
 
 
 <h2 id="0x04-PHP-Session的存储机制"><a href="#0x04-PHP-Session的存储机制" class="headerlink" title="0x04 PHP Session的存储机制"></a>0x04 PHP Session的存储机制</h2><p>上文中提到了 <code>PHP session</code>的存储机制是由<code>session.serialize_handler</code>来定义引擎的，默认是以文件的方式存储，且存储的文件是由<code>sess_sessionid</code>来决定文件名的，当然这个文件名也不是不变的，如<code>Codeigniter</code>框架的 <code>session</code>存储的文件名为<code>ci_sessionSESSIONID</code>，如下图所示</p>
-<p><img src="05/09/PHP-Session-Unserialization/1.png"></p>
+<p><img src="https://www.notion.so/WEB-Session-Unserialization-d0e52793e1dd44889be42b904c628602?pvs=4#9f4110956f0043c385207124aba6dad4"></p>
 <p>当然，文件的内容始终是session值的序列化之后的内容：</p>
-<p><img src="05/09/PHP-Session-Unserialization/wc.png"></p>
+<p><img src="https://www.notion.so/WEB-Session-Unserialization-d0e52793e1dd44889be42b904c628602?pvs=4#c12fe97d69f54b0499c263bf18a26e6d"></p>
 <br>
 
 <p>session.serialize_handler定义的引擎有三种，如表：</p>
