@@ -271,9 +271,11 @@ if (!isset($_SESSION[&#39;username&#39;])) &#123;
 
 
 <h2 id="0x04-PHP-Session的存储机制"><a href="#0x04-PHP-Session的存储机制" class="headerlink" title="0x04 PHP Session的存储机制"></a>0x04 PHP Session的存储机制</h2><p>上文中提到了 <code>PHP session</code>的存储机制是由<code>session.serialize_handler</code>来定义引擎的，默认是以文件的方式存储，且存储的文件是由<code>sess_sessionid</code>来决定文件名的，当然这个文件名也不是不变的，如<code>Codeigniter</code>框架的 <code>session</code>存储的文件名为<code>ci_sessionSESSIONID</code>，如下图所示</p>
-<p><a target="_blank" rel="noopener" href="https://xzfile.aliyuncs.com/media/upload/picture/20191026142528-67263294-f7b9-1.png">https://xzfile.aliyuncs.com/media/upload/picture/20191026142528-67263294-f7b9-1.png</a></p>
-<p>当然，文件的内容始终是session值的序列化之后的内容：</p>
-<p><a target="_blank" rel="noopener" href="https://xzfile.aliyuncs.com/media/upload/picture/20191026142445-4dd97c2e-f7b9-1.png">https://xzfile.aliyuncs.com/media/upload/picture/20191026142445-4dd97c2e-f7b9-1.png</a></p>
+<p><img src="https://s2.loli.net/2024/07/12/gQpHOu7GrLRZ93V.png" alt="20191026142528-67263294-f7b9-1.png"></p>
+<br>
+当然，文件的内容始终是session值的序列化之后的内容：
+
+<p><img src="https://s2.loli.net/2024/07/12/loqsBv7yQj5TCME.png" alt="wc.png"></p>
 <br>
 
 <p>session.serialize_handler定义的引擎有三种，如表：</p>
@@ -615,7 +617,7 @@ echo urlencode(serialize($a));
         
         <span class="tag">
             
-            <a href="/tags/CTF-Web-Session/" style="color: #ffa2c4">CTF-Web Session</a>
+            <a href="/tags/CTF-Web-Session/" style="color: #00bcd4">CTF-Web Session</a>
         </span>
         
     </div>
