@@ -17,7 +17,7 @@
 
 
     <meta charset="utf-8" />
-    <title> | Flu0r1n3の妙妙屋</title>
+    <title>Categories: Misc | Flu0r1n3の妙妙屋</title>
     <meta name="author" content="Flu0r1n3" />
     <meta name="description" content="" />
     <meta name="keywords" content="" />
@@ -51,10 +51,6 @@
 
 
 <script src="/js/lib/preview.js"></script>
-
-
-
-
 
 
 
@@ -168,70 +164,85 @@
 </transition>
 
         <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
-            <div class="article">
-    <div>
-        <h1></h1>
-    </div>
-    <div class="info">
-        <span class="date">
-            <span class="icon">
-                <i class="fa-solid fa-calendar fa-fw"></i>
-            </span>
-            2024/7/12
+            <div id="archives">
+    
+    <div class="categories-tags">
+        
+        
+        
+        <span>
+            <a href="/categories/%E4%B8%80%E4%BA%9B%E9%A3%8E%E8%A8%80%E9%A3%8E%E8%AF%AD/" style="background: #ff7d73">
+                <span class="icon">
+                    <i class="fa-solid fa-bookmark fa-fw"></i>
+                </span>
+                一些风言风语
+            </a>
         </span>
         
         
+        
+        <span>
+            <a href="/categories/Web/" style="background: #00a596">
+                <span class="icon">
+                    <i class="fa-solid fa-bookmark fa-fw"></i>
+                </span>
+                Web
+            </a>
+        </span>
+        
+        
+        
+        <span>
+            <a href="/categories/Misc/" style="background: linear-gradient(120deg, #9abbf7 0%, #ffbbf4 100%)">
+                <span class="icon">
+                    <i class="fa-solid fa-bookmark fa-fw"></i>
+                </span>
+                Misc
+            </a>
+        </span>
+        
+        
+        
+        
     </div>
     
-    <div class="content" v-pre>
-        <h2 id="2024年上海大学生网络安全大赛暨磐石行动网络安全赛道Misc全解"><a href="#2024年上海大学生网络安全大赛暨磐石行动网络安全赛道Misc全解" class="headerlink" title="2024年上海大学生网络安全大赛暨磐石行动网络安全赛道Misc全解"></a><strong>2024年上海大学生网络安全大赛暨磐石行动网络安全赛道Misc全解</strong></h2><h4 id="Wifi密码"><a href="#Wifi密码" class="headerlink" title="Wifi密码"></a>Wifi密码</h4><p>搜索得到文章<a target="_blank" rel="noopener" href="https://blog.csdn.net/Waffle666/article/details/109354830">https://blog.csdn.net/Waffle666/article/details/109354830</a></p>
-<p>按照文章和题目提示破解密码</p>
-<p><img src="https://s2.loli.net/2024/07/12/CcJIG5R1i2xMQsH.png" alt="wifi.png"></p>
-<br>
-
-<br>
-
-<h4 id="5GC网元AMF名称"><a href="#5GC网元AMF名称" class="headerlink" title="5GC网元AMF名称"></a>5GC网元AMF名称</h4><p>没见过的题目呢，上网查一下</p>
-<p><img src="https://s2.loli.net/2024/07/12/ePhq32aCHzJfpIs.png" alt="5g.png"></p>
-<p>那就直接过滤NGAP协议就可以了</p>
-<br>
-
-<p>Wireshark本机打不开在虚拟机里面才能打开不知道wsm<br>打开找NGAP协议第一个NGsetupresponse里面一串base64解码</p>
-<p><img src="https://s2.loli.net/2024/07/12/ifI9MBt73TopmlG.png" alt="5g2.png"></p>
-<p>Base64解码flag{amfname_ujrr1123}</p>
-<br>
-
-<br>
-
-<h4 id="Tunnel"><a href="#Tunnel" class="headerlink" title="Tunnel"></a>Tunnel</h4><p>一开始没有什么思路</p>
-<p>发现很多icmp流量，上网查是和长度有关，考虑长度值ascii转字符(要看no responsed的)，看data部分的长度一个一个转码，去掉前面两个转出来的水平制表符得到flag{iCmp_1s_tO0_Ea5y_}</p>
- <br>
-
-<br>
-
-<h4 id="Ezdmp-复现"><a href="#Ezdmp-复现" class="headerlink" title="Ezdmp(复现)"></a>Ezdmp(复现)</h4><p>一个要用vol3分析的内存dmp文件但是最后因为vol3用不熟好多选项，都提示desktop也看见了flag但是dmp不出来看到wp再看看</p>
-<br>
-
- 
-
-<p>出wp了，有做这题的只有六张图真的找工具装环境把人折磨4了</p>
-<p><a target="_blank" rel="noopener" href="https://blog.he-zhan.xyz/post/notes/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">https://blog.he-zhan.xyz/post/notes/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/</a></p>
-<p>几个工具：Magnet AXIOM，LovelyMem。</p>
-<p>其中LovelyMem相当于一个集成环境了，也是感谢取证师傅的输出</p>
-<p><a target="_blank" rel="noopener" href="https://github.com/Tokeii0/LovelyMem">https://github.com/Tokeii0/LovelyMem</a></p>
-<p>按照里面的方法依次安装memprocfs和dokany，找半天博客文章不知道怎么装还得是油管</p>
-<p><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=hjWVUrf7Obk">https://www.youtube.com/watch?v=hjWVUrf7Obk</a><br><br></p>
-<p><img src="https://s2.loli.net/2024/07/12/9OSP25epYV4Ihb8.png" alt="ezdmp.png"></p>
-<br>
-AXIOM分析检材，结合题目附件DESKTOP.dmp就针对有desktop文件夹的找，找到一个flag用户用过的result.txt文件很可疑，但是试过vol3不能直接把文件dump出来这时候就用到lovelymem了，作者的B站还发了使用视频我收藏没看(。Dump出来在挂载的M盘看内容，password就是flag
-
+    <div class="timeline">
+        <div class="timeline-tail"></div>
+        <div class="timeline-content">
+            <div class="item-time">2024/5/9</div>
+            <a href="/2024/05/09/2024%E5%B9%B4%E4%B8%8A%E6%B5%B7%E5%A4%A7%E5%AD%A6%E7%94%9F%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E5%A4%A7%E8%B5%9B%E6%9A%A8%E7%A3%90%E7%9F%B3%E8%A1%8C%E5%8A%A8%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E8%B5%9B%E9%81%93Misc%E5%85%A8%E8%A7%A3/">
+                <h3>2024年上海大学生网络安全大赛暨磐石行动网络安全赛道Misc全解</h3>
+            </a>
+            <div class="info">
+                
+                <span class="category">
+                    <a href="/categories/Misc/">
+                        <span class="icon">
+                            <i class="fa-solid fa-bookmark fa-fw"></i>
+                        </span>
+                        Misc
+                    </a>
+                </span>
+                
+                
+                <span class="tags">
+                    <span class="icon">
+                        <i class="fa-solid fa-tags fa-fw"></i>
+                    </span>
+                    
+                    
+                    <span class="tag">
+                        
+                        <a href="/tags/CTF-Misc-%E7%94%B5%E5%AD%90%E5%8F%96%E8%AF%81/" style="color: #ffa2c4">
+                            CTF-Misc 电子取证
+                        </a>
+                    </span>
+                    
+                </span>
+                
+            </div>
+        </div>
     </div>
-    
-    
-    
-    
-    
-    
     
 </div>
 
@@ -263,12 +274,6 @@ AXIOM分析检材，结合题目附件DESKTOP.dmp就针对有desktop文件夹的
         
     </div>
     <script src="/js/main.js"></script>
-    
-    
-
-
-
-
     
 <script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
 </html>
