@@ -452,9 +452,8 @@ searchexploit suid文件 -m 提权脚本
 </code></pre>
 <br>
 <br>
-### 2.SUID共享库注入提权
 
-<p>在发现有SUID权限的.so文件时可以尝试运行和追踪该.so文件</p>
+<h3 id="2-SUID共享库注入提权"><a href="#2-SUID共享库注入提权" class="headerlink" title="2.SUID共享库注入提权"></a>2.SUID共享库注入提权</h3><p>在发现有SUID权限的.so文件时可以尝试运行和追踪该.so文件</p>
 <p>剩余操作与环境变量提权一致<br><br><br><br></p>
 <h3 id="3-SUID环境变量利用提权"><a href="#3-SUID环境变量利用提权" class="headerlink" title="3.SUID环境变量利用提权"></a>3.SUID环境变量利用提权</h3><p>查找发现env字样的文件(strings查看可显示字符)</p>
 <p>对没有使用绝对路径的引用我们可以劫持到绝对路径使得系统执行我们的提权操作</p>
@@ -482,9 +481,8 @@ export PATH=.:$PATH
 </code></pre>
 <br>
 <br>
-### 4.利用SUID-shell功能提权1
 
-<p>当3中对绝对路径的引用时，我们考虑通过bash低版本</p>
+<h3 id="4-利用SUID-shell功能提权1"><a href="#4-利用SUID-shell功能提权1" class="headerlink" title="4.利用SUID-shell功能提权1"></a>4.利用SUID-shell功能提权1</h3><p>当3中对绝对路径的引用时，我们考虑通过bash低版本</p>
 <pre><code class="Plain">bash --version
 </code></pre>
 <p>version&lt;&#x3D;4.2时可以在bash中定义function用路径组合做文件名</p>
@@ -495,9 +493,8 @@ export -f /usr/sbin/service
 </code></pre>
 <br>
 <br>
-### 5.利用SUID-shell功能提权2
 
-<p>Bash version&lt;&#x3D;4.4考虑对bash环境变量进行设置</p>
+<h3 id="5-利用SUID-shell功能提权2"><a href="#5-利用SUID-shell功能提权2" class="headerlink" title="5.利用SUID-shell功能提权2"></a>5.利用SUID-shell功能提权2</h3><p>Bash version&lt;&#x3D;4.4考虑对bash环境变量进行设置</p>
 <pre><code class="Plain">env -i SHELLOPTS=strace PS4=&#39;$(cp /bin/bash /tmp/rootbash;chmod +xs /tmp/rootbash)&#39;  suid文件名(绝对路径)
 </code></pre>
 <br>
@@ -510,9 +507,8 @@ cat /root/.bash_history
 </code></pre>
 <br>
 <br>
-### 2.配置文件查看
 
-<p>就像我之前打的一台bizness靶机，其中Apache OFBiz组件包含了数据库，就是通过数据库配置文件来查看密码的</p>
+<h3 id="2-配置文件查看"><a href="#2-配置文件查看" class="headerlink" title="2.配置文件查看"></a>2.配置文件查看</h3><p>就像我之前打的一台bizness靶机，其中Apache OFBiz组件包含了数据库，就是通过数据库配置文件来查看密码的</p>
 <p>如ovpn、数据库文件等配置文件可以查看<br><br><br><br></p>
 <h3 id="3-SSH密钥敏感信息"><a href="#3-SSH密钥敏感信息" class="headerlink" title="3.SSH密钥敏感信息"></a>3.SSH密钥敏感信息</h3><p>靶机中权限可能可以允许我们查看SSH配置文件，无论是公钥还是私钥都有可能提权的价值，调整ssh的参数后尝试连接以获取更高等级的权限<br><br><br><br><br><br></p>
 <h2 id="内核利用提权"><a href="#内核利用提权" class="headerlink" title="内核利用提权"></a>内核利用提权</h2><p>这种利用通常在其他几种方法都不奏效的情况下才使用，因为内核利用可能导致系统不稳定或会向管理员报警，因此会导致被发现溯源等，所以不到所有手段耗尽不轻易使用<br><br><br>内核利用主要利用工具为<code>linpeas</code>，如果靶机中有<code>curl</code>命令可以直接将执行脚本下载到靶机，如果没有用nc传输</p>
